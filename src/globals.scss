@@ -1,0 +1,120 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+
+}
+
+:root {
+  --background: #E9E9E9;
+   --bg-color: #E9E9E9;
+  --text-color: #171717;
+}
+
+html,
+body {
+   width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Montserrat", sans-serif;
+}
+// Color Variables
+$background_color: #E9E9E9;
+$default_color: #8B6649; 
+$input_background: #E8E7E7;
+$default_text-color: #E7E6E6;
+$alternative_text-color: #8B6649;
+$border_color: #E9E9E9;
+
+$calendar_background: #E9E9E9;
+
+//dark-theme color variables
+
+$dark_background_color: #1F1F1F;
+$dark_default_color: #8B6649;
+$dark_input_background: #2C2C2C;
+$dark_default_text-color: #E7E6E6;
+$dark_alternative_text-color: #8B6649; // fix it
+$dark_border_color: #2A2A2A;
+
+$dark_calendar_background: #2A2A2A;
+
+
+//default-btns settings
+
+button {
+  background-color: $background_color;
+  width: 100%;
+  max-width: 250px;
+  transition: .8s;
+  color: $alternative_text-color;
+  height: 70px;
+  border: 1px solid $border_color;
+  border-radius: 63px;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+button:hover {
+ background-color: #b7b8b9; 
+  border: 1px solid $border_color;
+  transition: .8s;
+}
+
+a {
+  color: #E7E6E6;
+  font-size: 20px;
+
+}
+
+
+// Только темная тема - применяем изменения
+.dark {
+  --bg-color: #1A1A1A !important;
+  --text-color: #FFFFFF !important;
+}
+
+// Применяем только для темной темы
+.dark,
+.dark body,
+.dark html,
+.dark div,
+.dark section,
+.dark article,
+.dark aside,
+.dark header,
+.dark footer,
+.dark nav,
+.dark main,
+.dark .card,
+.dark .block,
+.dark .container,
+.dark .wrapper,
+.dark .modal,
+.dark .popup,
+.dark button,
+.dark input,
+.dark textarea,
+.dark select,
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6,
+.dark p,
+.dark span,
+.dark a,
+.dark li {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+  border-color: #404040 !important;
+}
+
+// Плавный переход только для темной темы
+.dark * {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}

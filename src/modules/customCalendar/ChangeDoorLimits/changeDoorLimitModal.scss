@@ -1,0 +1,26 @@
+
+@use "@/globals.scss" as *;
+
+
+.modal-overlay {
+    display: flex;
+    flex-direction: column;
+    background-color: $default_color;
+    border-radius: 15px;
+    padding: 22px 30px 33px 27px;
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    color: white;
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: row;
+    
+}

@@ -1,0 +1,39 @@
+@use "@/globals.scss" as *;
+
+.custom-select {
+    &__control {
+        border: 1px solid #ccc!important;
+        border-radius: 4px!important;
+        transition: border-color 0.2s!important;
+        height: 50px!important;
+        cursor: pointer!important;
+        background-color: #e8e7e7!important;
+
+        &:hover {
+            border-color: $default_color!important;
+        }
+
+        &--is-focused {
+            border-color: $default_color!important;
+            box-shadow: 0 0 0 2px rgba($default_color, 0.2)!important;
+            outline: none!important;
+            background-color: #e8e7e7!important;
+        
+        }
+    }
+        &__option {
+     
+        &--is-focused {
+            background-color: rgba($default_color, 0.15)!important; 
+            color: $default_color!important;
+        }
+
+      
+        &--is-selected {
+            background-color: $default_color!important;
+            color: white!important;
+        }
+    }
+    
+
+}

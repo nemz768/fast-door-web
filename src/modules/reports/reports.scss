@@ -1,0 +1,337 @@
+@use '@/globals.scss' as *;
+
+.reports-block {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    gap: 2rem;
+    box-sizing: border-box;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+
+    @media (max-width: 480px) {
+        padding: 0.75rem;
+        gap: 1rem;
+    }
+
+    &-box {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        min-width: 300px;
+        padding: 1.5rem;
+        box-sizing: border-box;
+        row-gap: 20px;
+
+        @media (max-width: 768px) {
+            width: 100%;
+            max-width: 100%;
+            min-width: unset;
+            padding: 1rem;
+        }
+
+        @media (max-width: 480px) {
+            padding: 0.75rem;
+        }
+
+        &--scrollable {
+            max-height: 525px;
+            overflow-y: auto;
+            overflow-x: hidden;
+
+            @media (max-width: 768px) {
+                max-height: 400px;
+            }
+
+            @media (max-width: 480px) {
+                max-height: 300px;
+            }
+
+            &::-webkit-scrollbar {
+                width: 8px;
+            }
+            &::-webkit-scrollbar-track {
+                background: #f1f1f1; 
+                border-radius: 4px;
+            }
+            &::-webkit-scrollbar-thumb {
+                background: $default_color;
+                border-radius: 4px;
+            }
+
+            scrollbar-width: thin;
+            scrollbar-color: $default_color #f1f1f1;
+        }
+    
+        &-form {
+            border-radius: 50px;
+            display: flex;
+            flex-direction: column;
+            row-gap: 29px;
+            background-color: $default_color;
+            max-height: 712px;
+            height: 100%;
+            padding: 50px 40px 35px 45px;
+
+            @media (max-width: 768px) {
+                border-radius: 24px;
+                padding: 30px 25px;
+                row-gap: 20px;
+            }
+
+            @media (max-width: 480px) {
+                border-radius: 16px;
+                padding: 20px 16px;
+                row-gap: 16px;
+            }
+
+            &-subtitle {
+                color: #FFFFFF;
+                font-weight: 500;
+                font-size: 20px;
+                line-height: 100%;
+                letter-spacing: 0%;
+
+                @media (max-width: 768px) {
+                    font-size: 18px;
+                }
+
+                @media (max-width: 480px) {
+                    font-size: 16px;
+                }
+            }
+
+            &-dateInputs {
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                column-gap: 40px;
+
+                @media (max-width: 768px) {
+                    flex-direction: column;
+                    gap: 16px;
+                    row-gap: 16px;
+                }
+
+                &-input {
+                    height: 49px;
+                    border: none!important;
+
+                    @media (max-width: 480px) {
+                        height: 42px;
+                    }
+                }
+            }
+        }
+
+        &-input {
+            height: 49px;
+    
+            @media (max-width: 480px) {
+                height: 42px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            width: 100%;
+            max-width: 600px;
+            max-height: none; 
+        }
+
+        &-title {
+            color: $default_color;
+            font-weight: 600;
+            margin: 0 0 1.5rem 0;
+            font-size: 1.4rem;
+
+            @media (max-width: 768px) {
+                font-size: 1.2rem;
+                margin: 0 0 1rem 0;
+            }
+
+            @media (max-width: 480px) {
+                font-size: 1.1rem;
+                margin: 0 0 0.75rem 0;
+            }
+        }
+    }
+
+    &-box-rep {
+        border: 3px solid $default_color;
+        border-radius: 24px;
+        height: 70px; 
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        padding-left: 25px;
+        box-sizing: border-box;
+
+        @media (max-width: 768px) {
+            border-radius: 16px;
+            height: 60px;
+            padding-left: 16px;
+        }
+
+        @media (max-width: 480px) {
+            border-radius: 12px;
+            height: 56px;
+            padding-left: 12px;
+            border-width: 2px;
+        }
+
+        &-download {
+            width: 70px;
+            height: 70px;
+            border: none;
+            border-radius: 24px;
+            background-color: $default_color;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            flex-shrink: 0;
+
+            @media (max-width: 768px) {
+                width: 50px;
+                height: 50px;
+                border-radius: 16px;
+                font-size: 16px;
+            }
+
+            @media (max-width: 480px) {
+                width: 40px;
+                height: 40px;
+                border-radius: 10px;
+                font-size: 14px;
+            }
+        }
+
+        &-ptext {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            margin: 0;
+            gap: 12px;
+
+            @media (max-width: 768px) {
+                gap: 8px;
+            }
+
+            @media (max-width: 480px) {
+                gap: 6px;
+            }
+
+            &-userTitle {
+                font-weight: 600;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                flex: 1;
+                font-size: 16px;
+
+                @media (max-width: 768px) {
+                    font-size: 14px;
+                }
+
+                @media (max-width: 480px) {
+                    font-size: 13px;
+                }
+            }
+
+            &-date-group {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+                white-space: nowrap;
+
+                @media (max-width: 768px) {
+                    gap: 10px;
+                }
+
+                @media (max-width: 480px) {
+                    gap: 6px;
+                    flex-shrink: 0;
+                }
+            }
+
+            &-date {
+                font-size: 14px;
+                line-height: 1;
+                color: #555;
+
+                @media (max-width: 768px) {
+                    font-size: 12px;
+                }
+
+                @media (max-width: 480px) {
+                    font-size: 11px;
+                }
+            }
+        }
+    }
+}
+
+.reports-error {
+    color: red;
+    padding: 1rem;
+    text-align: center;
+
+    @media (max-width: 480px) {
+        padding: 0.75rem;
+        font-size: 14px;
+    }
+}
+
+.reports-form-submit-btn {
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+
+    @media (max-width: 768px) {
+        max-width: 100%;
+    }
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-error {
+    border: 1px solid red !important;
+    background-color: #fff5f5 !important;
+    color: red !important;
+    
+    &::placeholder {
+        color: red !important;
+        opacity: 1;
+    }
+}
+
+.select-error {
+    border: 1px solid red !important;
+    
+    div {
+        border-color: red !important;
+    }
+}
+
+.date-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+}

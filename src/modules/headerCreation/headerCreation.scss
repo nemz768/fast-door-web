@@ -1,0 +1,89 @@
+@use '@/globals.scss' as *;
+
+.header-creation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 100px;
+
+    &-btn {
+        display: flex;
+        column-gap: 30px;
+        align-items: center;
+        justify-content: center;
+        color: $default_text-color;
+        background-color: $default-color;
+        font-weight: 500;
+        font-size: 30px;
+        animation: slideOut ease-out 0.6s;
+    }
+}
+
+// Адаптив
+@media (max-width: 480px) {
+
+    .logo-wrapper {
+        width: 180px;
+        height: 64px;
+    }
+
+}
+
+@media (max-width: 320px) {
+    .logo-wrapper {
+        width: 150px;
+        height: 54px;
+    }
+
+    .header-creation-btn {
+        font-size: 20px;
+        column-gap: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-creation {
+        flex-direction: column;     
+        justify-content: center;    
+        align-items: center;         
+        row-gap: 20px;               
+        text-align: center;
+
+    }
+
+    .logo-wrapper {
+        width: 220px;
+        height: 80px;
+    }
+
+    .header-creation-btn {
+        display: none;
+    }
+}
+
+@media (min-width: 1440px) {
+    .header-creation {
+        padding: 40px 120px 0;
+    }
+
+    .logo-wrapper {
+        width: 320px;
+        height: 114px;
+    }
+
+    .header-creation-btn {
+        font-size: 32px;
+        column-gap: 35px;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(20%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

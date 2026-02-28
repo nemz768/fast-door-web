@@ -1,0 +1,65 @@
+
+@use "@/globals.scss" as *;
+
+.custom-table {
+    max-width: 100%;
+    width: 100%;
+    max-height: 647px;
+    height: 100%;
+    border: 1px solid $dark_border_color; 
+    border-collapse: collapse; 
+
+    th, td {
+        border: 1px solid $dark_border_color;
+        padding: 8px;
+    }
+
+    tr {
+        border: 1px solid $dark_border_color;
+    }
+
+    &-header {
+        background-color: $default_color;
+        &-box{
+            color: $default_text-color;
+              border: 1px solid $dark_border_color;
+        }
+        
+    }
+    &-tbody {
+  td {
+    height: 60px;
+    min-height: 60px;
+    box-sizing: border-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+       tr:nth-child(odd) {
+           background-color: rgb(221, 219, 217);
+       }
+       
+       .custom-table-tbody-centered {
+           text-align: center;
+       }
+       
+    }
+}
+
+
+
+.doorsTable-container{
+    display: flex;
+    flex-direction: column;
+    row-gap: 40px;
+
+}
+
+.doorsTable {
+    max-width: 664px;
+    width: 100%;
+    
+}
+
+

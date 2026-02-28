@@ -1,0 +1,15 @@
+
+@use "@/globals.scss" as *;
+
+
+
+.title {
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 30px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: $default_color;
+    font-weight: 700;
+    margin-bottom: 30px;
+}

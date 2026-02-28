@@ -1,0 +1,72 @@
+@use '../../globals.scss' as *;
+
+
+.app-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 20px;
+    background-color: $default_color;
+    box-sizing: border-box;
+    font-weight: 500;
+    color: #FFFFFFB2;
+    font-family: 'Montserrat', sans-serif;
+   
+    @media (max-width: 768px) {
+        padding: 15px;
+        font-size: 14px;
+    }
+}
+
+.app-footer-title {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: #ffffff;
+    text-align: center;
+
+    @media (max-width: 480px) {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+}
+
+.app-footer-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+
+    @media (max-width: 768px) {
+        gap: 6px;
+    }
+}
+
+.app-footer-links {
+    display: flex;
+    gap: 15px;
+    font-size: 20px;
+    line-height: 100%;
+  
+}
+
+.app-footer-links a {
+    text-decoration: none;
+    transition: color 0.3s, opacity 0.3s;
+         color: #FFFFFFB2;
+    font-family: 'Montserrat', sans-serif;
+   
+    &:hover {
+        opacity: 0.8;
+        color: #FFFFFF;
+    }
+
+    &:active {
+        opacity: 0.6;
+    }
+}

@@ -1,0 +1,28 @@
+.mainInstaller_main {
+    margin: 47px 44px 175px 37px;
+
+
+}
+
+.main-content {
+    max-width: 100vw;
+ 
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+
+    &-blocks {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+}
+
+
+.calendar-tile-content {
+    font-weight: 700;
+    font-style: Bold;
+    text-align: center;
+    color: #48301E;
+
+}

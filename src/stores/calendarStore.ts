@@ -29,7 +29,7 @@ class CalendarStore {
       this.error = null;
 
       const url =
-        `${process.env.NEXT_PUBLIC_API_URL}/doorLimits/allDays` +
+        `${process.env.NEXT_PUBLIC_API_URL}/orders/allDays` +
         `?page=${page}&size=${size}&sortBy=${sortBy}`;
 
       const response = await fetch(url);
@@ -121,12 +121,11 @@ class CalendarStore {
         const url = `${process.env.NEXT_PUBLIC_API_URL}/doorLimits/closeDate?date=${item.date}`;
         const payload = {
           date: item.date,
-          availability: false, // ⚠️ исправил поле
+          availability: false, 
         };
 
         await this.fetchPatchCalendar(url, payload, "PATCH");
 
-        // 🔥 обновляем allData
         const idxAll = this.allData.findIndex(d => d.limitDate === item.date);
         if (idxAll !== -1) {
           this.allData[idxAll] = {
@@ -135,7 +134,6 @@ class CalendarStore {
           };
         }
 
-        // 🔥 обновляем pagedData
         const idxPaged = this.pagedData.findIndex(d => d.limitDate === item.date);
         if (idxPaged !== -1) {
           this.pagedData[idxPaged] = {

@@ -32,7 +32,6 @@ export default function Input({
         className={`${className} ${error ? 'input-error' : ''}`}
         aria-invalid={!!error}
       />
-      {/* 🔹 Всегда рендерим span, даже если ошибка пустая */}
      <span
   className="input-error-message"
   aria-live="polite"

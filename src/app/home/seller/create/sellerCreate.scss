@@ -6,7 +6,6 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px;
 }
 
 .create-form {
@@ -15,10 +14,10 @@
   height: 100%;
   background-color: $default_color;
   border-radius: 30px;
-  padding: 15px 38px 25px 56px;
+  padding: 15px 38px 15px 56px;
   display: flex;
   flex-direction: column;
-  row-gap: 17px;
+  row-gap: 10px;
 
   &-subtitle {
     font-weight: 700;
@@ -39,7 +38,7 @@
         display: flex;
         flex-direction: column;
         width: 50%;
-        row-gap: 13px;
+        row-gap: 7px;
         font-weight: 500;
         font-size: 2.0ch; 
         color: $default_text-color;

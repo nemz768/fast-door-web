@@ -57,8 +57,8 @@ const UniversalCalendar = observer(({
   }, [fetchData]);
 
   const calendarData = calendarStore.allData;
-  const allowedDates = calendarData.map(d => new Date(d.limitDate));
-  const closedDates = calendarData.filter(d => !d.availability).map(d => new Date(d.limitDate));
+  const allowedDates = calendarData.map(d => new Date(d.date));
+  const closedDates = calendarData.filter(d => !d.available).map(d => new Date(d.date));
 
   const formatDateKey = (date: Date) =>
     `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
@@ -113,7 +113,7 @@ const tileClassName = ({ date }: { date: Date }) => {
 
   const tileContent = ({ date }: { date: Date }) => {
     if (tileContentFn) {
-      const item = calendarData.find(cd => cd.limitDate === formatDateKey(date));
+      const item = calendarData.find(cd => cd.date === formatDateKey(date));
       return tileContentFn(date, item);
     }
     return null;
@@ -165,7 +165,7 @@ const tileClassName = ({ date }: { date: Date }) => {
 
     const dateKey = formatDateKey(selectedDates[0]);
 
-    const item = calendarData.find(cd => cd.limitDate === dateKey);
+    const item = calendarData.find(cd => cd.date === dateKey);
 
     if (!item) return;
 
@@ -179,6 +179,10 @@ const tileClassName = ({ date }: { date: Date }) => {
   };
 
   const handleModalSuccess = async () => {
+      if (modalDate) {
+    const updatedDate = new Date(modalDate.date);
+    setSelectedDates([updatedDate]); 
+  }
     setIsModalOpen(false);
     setModalDate(null);
   };
@@ -204,9 +208,10 @@ const tileClassName = ({ date }: { date: Date }) => {
       <div className='custom-calendar-modal'>
         {isModalOpen && modalDate && (
           <ChangeDoorsLimitModal
-            date={modalDate.limitDate}
+            date={modalDate.date}
             frontDoorQuantity={modalDate.frontDoorQuantity}
             inDoorQuantity={modalDate.inDoorQuantity}
+            available={modalDate.available}
             onClose={handleCloseModal}
             onSuccess={handleModalSuccess}
           />

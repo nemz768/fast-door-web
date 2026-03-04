@@ -6,7 +6,7 @@ import "./customTable.scss";
 import TablePagination from "../tablePagination/tablePagination";
 import DoorsTable from "./doorsTable";
 import { formatDate } from "../formatDate/formatDate";
-
+import {useRouter} from 'next/navigation'
 import { observer } from "mobx-react-lite";
 
 
@@ -22,9 +22,9 @@ interface CustomTableProps {
 
 export default observer(function CustomTable({ role, pagination, initialPage, initialSize, selectedTable }: CustomTableProps) {
     const { getUsersData, error, deleteOrder } = tableStore;
-
     const [page, setPage] = useState<number>(typeof initialPage === 'number' ? Math.max(0, initialPage - 1) : 0);
     const [size, setSize] = useState<number>(initialSize ?? 10);
+    const router = useRouter();
 
     console.log("CustomTable rendered", { role, selectedTable, page, size });
 
@@ -144,7 +144,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                 {role === 'main' && <td className="table-comment">{item.messageMainInstaller || "-"}</td>}
                                 <td className="custom-table-tbody-centered">{item.installerName || "-"}</td>
                                 {role === 'administrator' && <td className="custom-table-tbody-centered">{item.nickname || "-"}</td>}
-                                {(role === 'salespeople') && <td className="table-btns custom-table-tbody-centered"><button>Ред.</button><button onClick={() => {
+                                {(role === 'salespeople') && <td className="table-btns custom-table-tbody-centered"><button onClick={()=> router.push(`./edit/${item.id}`)}>Ред.</button><button onClick={() => {
                                     deleteOrder(item.id)
                                     getUsersData(role, page, size, selectedTable);
                                 }}>Уд.</button></td>}

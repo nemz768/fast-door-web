@@ -2,23 +2,27 @@
 
 import HeaderCreation from "@/modules/headerCreation/headerCreation";
 import Title from "@/modules/title/title";
-import './sellerCreate.scss'
+
 import { observer } from "mobx-react-lite";
 
 import ProtectedRoute from "@/modules/security/protectedRoute";
-
+import '../../create/sellerCreate.scss'
 import { SellerForm } from "@/modules/sellerForm/sellerForm";
+import { useParams } from "next/navigation";
 
 
 const CreateOrderForm = observer(() => {
 
+    const params = useParams();
+
+
 
     return (
         <ProtectedRoute allowedRoles={['salespeople']}>
-            <HeaderCreation flag={true}/>
+            <HeaderCreation  flag={false} />
             <div className="create-form-wrapper">
-                <Title pageTitle={"Создание нового заказа"} />
-                <SellerForm/>
+                <Title pageTitle={"Редактирование заказа"} />
+                <SellerForm id={Number(params.id)} type="edit"/>
             </div>
         </ProtectedRoute>
     )

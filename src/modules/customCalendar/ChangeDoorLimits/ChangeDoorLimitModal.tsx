@@ -6,6 +6,7 @@ interface ChangeDoorsLimitModalProps {
   date: string;
   frontDoorQuantity: number;
   inDoorQuantity: number;
+  available: boolean;
   onClose: () => void;
   onSuccess: () => void;
 }
@@ -14,6 +15,7 @@ export const ChangeDoorsLimitModal: React.FC<ChangeDoorsLimitModalProps> = ({
   date,
   frontDoorQuantity,
   inDoorQuantity,
+  available,
   onClose,
   onSuccess,
 }) => {
@@ -36,73 +38,73 @@ export const ChangeDoorsLimitModal: React.FC<ChangeDoorsLimitModalProps> = ({
     setValue(cleaned);
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
-  setError(null);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-  try {
-    await calendarStore.editCalendarDate([
-      {
-        date,
-        frontDoorQuantity: Number(frontValue),
-        inDoorQuantity: Number(innerValue),
-      },
-    ]);
+    try {
+      await calendarStore.editCalendarDate([
+        {
+          date,
+          frontDoorQuantity: Number(frontValue),
+          inDoorQuantity: Number(innerValue),
+          available: available
+        },
+      ]);
 
-    onSuccess();
-  } catch (err) {
-    setError(
-      err instanceof Error ? err.message : 'Неизвестная ошибка'
-    );
-  } finally {
-    setLoading(false);
-  }
-};
+      onSuccess();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Неизвестная ошибка'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay">
+      <form onSubmit={handleSubmit} className="modal-form">
+        <div className="form-group">
+          <label htmlFor="frontDoors">Входные двери:</label>
+          <input
+            id="frontDoors"
+            type="number"
+            min="0"
+            step="1"
+            value={frontValue}
+            onChange={(e) => validateInput(e.target.value, setFrontValue)}
+            disabled={loading}
+          />
+        </div>
 
-          <span className="close-btn" onClick={onClose}>
-            ✕
-          </span>
-        <form onSubmit={handleSubmit} className="modal-form">
-          <div className="form-group">
-            <label htmlFor="frontDoors">Входные двери:</label>
-            <input
-              id="frontDoors"
-              type="number"
-              min="0"
-              step="1"
-              value={frontValue}
-              onChange={(e) => validateInput(e.target.value, setFrontValue)}
-              disabled={loading}
-            />
-          </div>
+        <div className="form-group">
+          <label htmlFor="innerDoors">Межкомнатные двери:</label>
+          <input
+            id="innerDoors"
+            type="number"
+            min="0"
+            step="1"
+            value={innerValue}
+            onChange={(e) => validateInput(e.target.value, setInnerValue)}
+            disabled={loading}
+          />
+        </div>
 
-          <div className="form-group">
-            <label htmlFor="innerDoors">Межкомнатные двери:</label>
-            <input
-              id="innerDoors"
-              type="number"
-              min="0"
-              step="1"
-              value={innerValue}
-              onChange={(e) => validateInput(e.target.value, setInnerValue)}
-              disabled={loading}
-            />
-          </div>
-
-          {error && <div className="error-message">{error}</div>}
-            <button
-              type="submit"
-              className="btn btn-primary"
-              disabled={loading}
-            >
-              Изменить
-            </button>
-        </form>
+        {error && <div className="error-message">{error}</div>}
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={loading}
+        >
+          Изменить
+        </button>
+      </form>
+      <span className="close-btn" onClick={onClose}>
+        ✕
+      </span>
     </div>
   );
 };

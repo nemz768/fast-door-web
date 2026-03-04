@@ -3,7 +3,13 @@ import { useRouter } from "next/navigation";
 import "./headerCreation.scss";
 import Logo from "../logo/Logo";
 
-export default function HeaderCreation() {
+
+
+interface HeaderCreationProps {
+  flag?: boolean;
+}
+export default function HeaderCreation({flag = true}:HeaderCreationProps) {
+
   const router = useRouter();
 
   return (
@@ -13,7 +19,7 @@ export default function HeaderCreation() {
       </div>
 
       <button
-        onClick={() => router.push("./")}
+        onClick={() => flag ? router.push("./") : router.push("../listOrdersSeller")}
         className="header-creation-btn"
       >
         <span>

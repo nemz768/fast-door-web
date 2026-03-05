@@ -195,5 +195,6 @@ test("login network error", async () => {
 
     expect(result).toBe(false);
     expect(store.user).toBeNull();
+    //dsdsd
   });
 });

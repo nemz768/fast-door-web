@@ -42,11 +42,11 @@ export default function MainInstaller() {
                             if (!item) return null;
 
                          
-                            const isClosed = !item.availability;
+                            const isClosed = !item.available;
                             const color = isClosed ? '#fff' : '#8b7355';
 
                             return (
-                                <p className="calendar-tile-content" style={{ color }}>
+                                <p key={item.id} className="calendar-tile-content" style={{ color }}>
                                     В: {item.frontDoorQuantity} <br /> М: {item.inDoorQuantity}
                                 </p>
                             );
@@ -55,9 +55,7 @@ export default function MainInstaller() {
 
                     <DoorsTable
                         pagination={true}
-
                     />
-
                 </div>
 
             </main>

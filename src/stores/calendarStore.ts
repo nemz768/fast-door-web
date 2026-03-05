@@ -3,11 +3,11 @@ import { makeAutoObservable } from "mobx";
 export interface CalendarDateItem {
   [x: string]: any;
   id: number;
-  limitDate: string;
+  date: string;
   frontDoorQuantity: number;
   inDoorQuantity: number;
-  availability: boolean;
-  orders: any[];
+  available: boolean;
+  orders?: any[];
 }
 
 class CalendarStore {
@@ -17,7 +17,7 @@ class CalendarStore {
   loading: boolean = false;
   totalPages: number = 0;
   totalElements: number = 0;
-    selectedDates: any;
+  selectedDates: any;
 
   constructor() {
     makeAutoObservable(this);
@@ -28,21 +28,26 @@ class CalendarStore {
       this.loading = true;
       this.error = null;
 
-      const url =
-        `${process.env.NEXT_PUBLIC_API_URL}/doorLimits/allDays` +
-        `?page=${page}&size=${size}&sortBy=${sortBy}`;
+      const url = `${process.env.NEXT_PUBLIC_API_URL}/orders/allDays?page=${page}&size=${size}&sort=${sortBy}`;
 
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        credentials: "include",
+        headers: { "Accept": "application/json" },
+      });
 
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       const result = await response.json();
 
-      this.pagedData = result.content;
+      this.pagedData = result.content.map((item: any) => ({
+        ...item,
+        available: item.available,
+      }));
+
       this.totalPages = result.totalPages;
       this.totalElements = result.totalElements;
 
-      return result.content;
+      return this.pagedData;
     } catch (err: any) {
       this.error = err.message;
       return [];
@@ -62,9 +67,14 @@ class CalendarStore {
 
       while (page < totalPages) {
         const url =
-          `${process.env.NEXT_PUBLIC_API_URL}/doorLimits/allDays?page=${page}&size=100`;
+          `${process.env.NEXT_PUBLIC_API_URL}/orders/allDays?page=${page}&size=100&sort=id`;
 
-        const response = await fetch(url);
+        const response = await fetch(url, {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: "include"
+        });
 
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
@@ -121,26 +131,24 @@ class CalendarStore {
         const url = `${process.env.NEXT_PUBLIC_API_URL}/doorLimits/closeDate?date=${item.date}`;
         const payload = {
           date: item.date,
-          availability: false, // ⚠️ исправил поле
+          available: false,
         };
 
         await this.fetchPatchCalendar(url, payload, "PATCH");
 
-        // 🔥 обновляем allData
-        const idxAll = this.allData.findIndex(d => d.limitDate === item.date);
+        const idxAll = this.allData.findIndex(d => d.date === item.date);
         if (idxAll !== -1) {
           this.allData[idxAll] = {
             ...this.allData[idxAll],
-            availability: false,
+            available: false,
           };
         }
 
-        // 🔥 обновляем pagedData
-        const idxPaged = this.pagedData.findIndex(d => d.limitDate === item.date);
+        const idxPaged = this.pagedData.findIndex(d => d.date === item.date);
         if (idxPaged !== -1) {
           this.pagedData[idxPaged] = {
             ...this.pagedData[idxPaged],
-            availability: false,
+            available: false,
           };
         }
       }
@@ -162,17 +170,17 @@ class CalendarStore {
         const url = `${process.env.NEXT_PUBLIC_API_URL}/doorLimits/openDate?date=${item.date}`;
         const payload = {
           date: item.date,
-          availability: true,
+          available: true,
         };
 
         await this.fetchPatchCalendar(url, payload, "PATCH");
 
         const updateItem = (arr: CalendarDateItem[]) => {
-          const idx = arr.findIndex(d => d.limitDate === item.date);
+          const idx = arr.findIndex(d => d.date === item.date);
           if (idx !== -1) {
             arr[idx] = {
               ...arr[idx],
-              availability: true,
+              available: true,
             };
           }
         };
@@ -188,52 +196,50 @@ class CalendarStore {
   };
 
 
-editCalendarDate = async (
-  items: {
-    date: string;
-    frontDoorQuantity: number;
-    inDoorQuantity: number;
-  }[]
-) => {
-  try {
-    this.loading = true;
-    this.error = null;
+  editCalendarDate = async (
+    items: {
+      date: string;
+      frontDoorQuantity: number;
+      inDoorQuantity: number;
+      available: boolean;
+    }[]
+  ) => {
+    try {
+      for (const item of items) {
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/doorLimits/editDate`;
 
-    for (const item of items) {
-      const url = `${process.env.NEXT_PUBLIC_API_URL}/doorLimits/editDate`;
+        await this.fetchPatchCalendar(url, item);
 
-      await this.fetchPatchCalendar(url, item);
-      
-      const idxAll = this.allData.findIndex(
-        d => d.limitDate === item.date
-      );
+        const idxAll = this.allData.findIndex(
+          d => d.date === item.date
+        );
 
-      if (idxAll !== -1) {
-        this.allData[idxAll] = {
-          ...this.allData[idxAll],
-          frontDoorQuantity: item.frontDoorQuantity,
-          inDoorQuantity: item.inDoorQuantity
-        };
+        if (idxAll !== -1) {
+          this.allData[idxAll] = {
+            ...this.allData[idxAll],
+            frontDoorQuantity: item.frontDoorQuantity,
+            inDoorQuantity: item.inDoorQuantity,
+            available: item.available
+          };
+        }
+        const idxPaged = this.pagedData.findIndex(
+          d => d.date === item.date
+        );
+
+        if (idxPaged !== -1) {
+          this.pagedData[idxPaged] = {
+            ...this.pagedData[idxPaged],
+            frontDoorQuantity: item.frontDoorQuantity,
+            inDoorQuantity: item.inDoorQuantity,
+            available: item.available
+          };
+        }
       }
-      const idxPaged = this.pagedData.findIndex(
-        d => d.limitDate === item.date
-      );
 
-      if (idxPaged !== -1) {
-        this.pagedData[idxPaged] = {
-          ...this.pagedData[idxPaged],
-          frontDoorQuantity: item.frontDoorQuantity,
-          inDoorQuantity: item.inDoorQuantity
-        };
-      }
+    } catch (err: any) {
+      this.error = err.message;
     }
-
-  } catch (err: any) {
-    this.error = err.message;
-  } finally {
-    this.loading = false;
-  }
-};
+  };
 
 
 }

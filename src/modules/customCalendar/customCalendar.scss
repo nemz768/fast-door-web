@@ -298,3 +298,18 @@
     color: #fff !important;
   }
 }
+
+
+.custom-calendar-actions {
+  display: flex;
+  column-gap: 30px;
+  padding-left: 30px;
+  button {
+    max-width: 50px;
+    max-height: 50px;
+    background-color: $default_color;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+}

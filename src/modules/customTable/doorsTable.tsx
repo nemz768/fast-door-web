@@ -62,16 +62,16 @@ const DoorsTable = observer(function DoorsTable({
 
           {data
             .map((item) => (
-              item.availability ? (
-                <tr key={item.id}>
-                  <td className="custom-table-tbody-centered">{formatDate(item.limitDate)}</td>
+              item.available ? (
+                <tr key={item.date}>
+                  <td className="custom-table-tbody-centered">{formatDate(item.date)}</td>
                   <td className="custom-table-tbody-centered">{item.frontDoorQuantity}</td>
                   <td className="custom-table-tbody-centered">{item.inDoorQuantity}</td>
                 </tr>
               ) :
                 (
-                  <tr key={item.id}>
-                    <td>{formatDate(item.limitDate)}</td>
+                  <tr key={item.date}>
+                    <td>{formatDate(item.date)}</td>
                     <td className="custom-table-tbody-centered" colSpan={2}>Дата закрыта</td>
                   </tr>
                 )

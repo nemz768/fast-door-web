@@ -169,7 +169,7 @@ class OrderStore {
         const preparedPayload = {
             ...payload,
             doorLimits: {
-               limitDate: payload.dateOrder
+                limitDate: payload.dateOrder
             },
         }
 
@@ -202,6 +202,72 @@ class OrderStore {
             this.loading = false;
         }
     }
+
+    getOrderSeller = async (id: number | undefined, role: string) => {
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/edit/${id}`;
+        const options: RequestInit = {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: 'include',
+        }
+
+        try {
+            this.error = null;
+            this.loading = true;
+
+            const response = await fetch(url, options)
+            const data = await response.json();
+            return data;
+        }
+        catch (err: any) {
+            console.error(err);
+            this.error = err.message;
+
+        } finally {
+            this.loading = false;
+        }
+
+    }
+
+    editOrderSeller = async (id: number, payload: object) => {
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/edit/${id}`;
+        const options: RequestInit = {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(payload),
+        };
+
+        try {
+            const response = await fetch(url, options);
+            const text = await response.text();
+
+            if (!response.ok) {
+                this.error = text || `HTTP ${response.status}`;
+                return false;
+            }
+            
+            if (!text.trim() || text === "{}") {
+                console.log("Заказ успешно обновлён (пустой ответ)");
+                return true;
+            }
+
+            try {
+                const data = JSON.parse(text);
+                console.log("Ответ сервера:", data);
+                return data;
+            } catch (e) {
+                console.warn("Не удалось распарсить ответ как JSON, но статус 200 — считаем успехом");
+                return true;
+            }
+        } catch (err: any) {
+            console.error("Сеть/ошибка:", err);
+            this.error = err.message;
+            return false;
+        }
+    };
 
 }
 

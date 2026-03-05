@@ -1,0 +1,10 @@
+ @use '@/globals.scss' as *;
+ 
+ .table-btn {
+    max-width: 50px;
+    max-height: 50px;
+    background-color: $default_color;
+    border-radius: 10px;
+    align-items: center;
+    justify-content: center;
+  }

@@ -24,11 +24,9 @@ jobs:
             set -e
 
             echo "Начинаем деплой..."
-
-            echo ""
-            echo "FRONTEND: FastDoor Web"
-
             cd ~/fast-door-web || exit 1
+
+            echo "FRONTEND: FastDoor Web"
 
             # Сохраняем текущий .env
             if [ -f .env.production ]; then
@@ -53,33 +51,30 @@ jobs:
 
             # Перезапуск PM2
             pm2 restart fast-door-web
-
             echo "Frontend деплой завершён"
 
-            echo ""
             echo "NGINX"
-
-            # Перезагрузка nginx
             sudo nginx -t && sudo systemctl reload nginx
-
             echo "Nginx перезапущен"
 
-            echo ""
-            echo "Очистка"
+            echo "Очистка dev-файлов и dev-зависимостей"
 
-            # Удаляем временный бэкап
+            # Удаляем временный бэкап env
             rm -f ~/fast-door-web/.env.backup
+
+            # Чистим npm dev-зависимости
+            npm prune --production
+
+            # Удаляем исходники и dev-файлы
+            rm -rf ~/fast-door-web/pages ~/fast-door-web/components ~/fast-door-web/styles ~/fast-door-web/tests ~/fast-door-web/scripts ~/fast-door-web/.vscode ~/fast-door-web/.eslintrc.js ~/fast-door-web/.prettierrc
 
             # Чистим кэш npm
             npm cache clean --force 2>/dev/null || true
 
             echo "Очистка завершена"
 
-            echo ""
             echo "Итоговый статус"
-
             pm2 status
 
-            echo ""
             echo "DEPLOY SUCCESSFUL"
             echo "Сайт: https://fast-door.ru"

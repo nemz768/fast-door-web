@@ -68,7 +68,7 @@ const handleSubmit = async (e: any) => {
           <Input 
             onChange={(event) => setGetUserData({...getUserData, [event.target.name]: event.target.value})} 
             name="password" 
-            placeholder="Пароль" 
+            placeholder="Пароль!" 
             type={isPasswordVisible ? 'text' : 'password'}
             value={getUserData.password}
             error={authStore.validationErrors.password}

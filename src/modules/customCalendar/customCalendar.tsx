@@ -7,6 +7,10 @@ import './customCalendar.scss';
 import { CalendarDateItem, calendarStore } from '@/stores/calendarStore';
 import { observer } from 'mobx-react-lite';
 import { ChangeDoorsLimitModal } from './ChangeDoorLimits/ChangeDoorLimitModal';
+import lockW from '@/assets/images/lock-white.png'
+import unlockW from '@/assets/images/unlock-white.png'
+import editW from '@/assets/images/edit-white.png'
+import TableButton from '../tableButton/tableButton';
 
 interface UniversalCalendarProps {
   fetchData?: () => Promise<CalendarDateItem[]>;
@@ -79,37 +83,37 @@ const UniversalCalendar = observer(({
   const tileDisabled = ({ date }: { date: Date }) =>
     !isDateAllowed(date) && !isDateClosed(date);
 
-const tileClassName = ({ date }: { date: Date }) => {
-  const classes: string[] = ['calendar-tile'];
+  const tileClassName = ({ date }: { date: Date }) => {
+    const classes: string[] = ['calendar-tile'];
 
-  const allowed = isDateAllowed(date);
-  const closed = isDateClosed(date);
-  const selected = isDateSelected(date);
+    const allowed = isDateAllowed(date);
+    const closed = isDateClosed(date);
+    const selected = isDateSelected(date);
 
-  if (!allowed && !closed) {
-    classes.push('calendar-tile-disabled');
+    if (!allowed && !closed) {
+      classes.push('calendar-tile-disabled');
+      return classes.join(' ');
+    }
+
+    if (closed && selected) {
+      classes.push('calendar-closed-selected');
+      return classes.join(' ');
+    }
+
+    if (closed) {
+      classes.push('calendar-tile-closed');
+    }
+
+    if (selected) {
+      classes.push('calendar-selected');
+    }
+
+    if (!closed && !selected) {
+      classes.push('calendar-tile-available');
+    }
+
     return classes.join(' ');
-  }
-
-  if (closed && selected) {
-    classes.push('calendar-closed-selected');
-    return classes.join(' ');
-  }
-
-  if (closed) {
-    classes.push('calendar-tile-closed');
-  }
-
-  if (selected) {
-    classes.push('calendar-selected');
-  }
-
-  if (!closed && !selected) {
-    classes.push('calendar-tile-available');
-  }
-
-  return classes.join(' ');
-};
+  };
 
   const tileContent = ({ date }: { date: Date }) => {
     if (tileContentFn) {
@@ -179,10 +183,10 @@ const tileClassName = ({ date }: { date: Date }) => {
   };
 
   const handleModalSuccess = async () => {
-      if (modalDate) {
-    const updatedDate = new Date(modalDate.date);
-    setSelectedDates([updatedDate]); 
-  }
+    if (modalDate) {
+      const updatedDate = new Date(modalDate.date);
+      setSelectedDates([updatedDate]);
+    }
     setIsModalOpen(false);
     setModalDate(null);
   };
@@ -220,9 +224,9 @@ const tileClassName = ({ date }: { date: Date }) => {
 
       {showActions && (
         <div className="custom-calendar-actions">
-          <button onClick={closeDates}>Закрыть</button>
-          <button onClick={openDates}>Открыть</button>
-          <button onClick={showChangeDoorLimitModal}>Редактировать</button>
+          <TableButton src={lockW.src} alt="lock" onClick={closeDates} />
+          <TableButton src={unlockW.src} alt="unlock" onClick={openDates} />
+          <TableButton src={editW.src} alt="edit" onClick={showChangeDoorLimitModal} />
         </div>
       )}
     </div>

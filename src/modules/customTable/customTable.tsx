@@ -6,9 +6,12 @@ import "./customTable.scss";
 import TablePagination from "../tablePagination/tablePagination";
 import DoorsTable from "./doorsTable";
 import { formatDate } from "../formatDate/formatDate";
-import {useRouter} from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { observer } from "mobx-react-lite";
-
+import removeW from '@/assets/images/removeW.png'
+import confirmW from '@/assets/images/confirmW.png'
+import editW from '@/assets/images/editW.png'
+import TableButton from "../tableButton/tableButton";
 
 interface CustomTableProps {
     role: string;
@@ -58,7 +61,10 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                             <tr key={item.id}>
                                 <td>{item.fullName}</td>
                                 <td>{item.phone}</td>
-                                <td><button>Ред.</button><button>Уд.</button></td>
+                                <td className="custom-table-tbody-centered">
+                                    <TableButton src={editW.src} alt="edit" />
+                                    <TableButton src={removeW.src} alt="remove"/>
+                                </td>
                             </tr>
                         ))}
 
@@ -106,7 +112,13 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                 <td className="table-comment">{item.messageMainInstaller || "-"}</td>
                                 <td className="custom-table-tbody-centered">{item.installerName || "-"}</td>
                                 <td>{item.nickname || "-"}</td>
-                                <td className="table-btns custom-table-tbody-centered"><button>Ред.</button><button onClick={() => deleteOrder(item.id)}>Уд.</button></td>
+                                <td className="table-btns custom-table-tbody-centered">
+                                    <TableButton src={editW.src} alt="edit" />
+                                    <TableButton src={removeW.src} alt="remove" onClick={() => {
+                                       deleteOrder(item.id)
+                                        getUsersData(role, page, size, selectedTable);
+                                    }} />
+                                </td>
                             </tr>
                         ))}
                     </tbody>
@@ -144,11 +156,13 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                 {role === 'main' && <td className="table-comment">{item.messageMainInstaller || "-"}</td>}
                                 <td className="custom-table-tbody-centered">{item.installerName || "-"}</td>
                                 {role === 'administrator' && <td className="custom-table-tbody-centered">{item.nickname || "-"}</td>}
-                                {(role === 'salespeople') && <td className="table-btns custom-table-tbody-centered"><button onClick={()=> router.push(`./edit/${item.id}`)}>Ред.</button><button onClick={() => {
-                                    deleteOrder(item.id)
-                                    getUsersData(role, page, size, selectedTable);
-                                }}>Уд.</button></td>}
-                                {(role === 'main') && <td className="custom-table-tbody-centered"><button>Уст.</button></td>}
+                                {(role === 'salespeople') && <td className="table-btns custom-table-tbody-centered">
+                                    <TableButton src={editW.src} alt="edit" onClick={() => router.push(`./edit/${item.id}`)} />
+                                    <TableButton src={removeW.src} alt="remove" onClick={() => {
+                                        deleteOrder(item.id)
+                                        getUsersData(role, page, size, selectedTable);
+                                    }} /></td>}
+                                {(role === 'main') && <td className="custom-table-tbody-centered"><TableButton src={confirmW.src} alt="confirm" /></td>}
                             </tr>
                         ))}
                     </tbody>

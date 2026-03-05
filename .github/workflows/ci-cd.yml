@@ -3,7 +3,7 @@ name: Deploy FastDoor
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:
@@ -36,7 +36,7 @@ jobs:
             fi
 
             # Обновляем код
-            git pull origin master
+            git pull origin main
 
             # Восстанавливаем .env если пропал
             if [ ! -f .env.production ] && [ -f .env.backup ]; then

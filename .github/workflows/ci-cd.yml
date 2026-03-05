@@ -1,72 +1,84 @@
-#!/bin/bash
+name: Deploy FastDoor
 
+on:
+  push:
+    branches:
+      - main
 
-set -e  # Остановить скрипт при любой ошибке
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
 
-echo "Начинаем деплой..."
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            set -e
 
-echo ""
-echo "FRONTEND: FastDoor Web "
+            echo "Начинаем деплой..."
 
-cd ~/fast-door-web || exit 1
+            echo ""
+            echo "FRONTEND: FastDoor Web"
 
+            cd ~/fast-door-web || exit 1
 
-# Сохраняем текущий .env (на случай если git reset потребуется)
-if [ -f .env.production ]; then
-    cp .env.production .env.backup
-    echo ".env.production сохранён в .env.backup"
-fi
+            # Сохраняем текущий .env
+            if [ -f .env.production ]; then
+              cp .env.production .env.backup
+              echo ".env.production сохранён в .env.backup"
+            fi
 
-# Обновляем код
-git pull origin master
+            # Обновляем код
+            git pull origin main
 
-# Восстанавливаем .env если он пропал (на всякий случай)
-if [ ! -f .env.production ] && [ -f .env.backup ]; then
-    cp .env.backup .env.production
-    echo ".env.production восстановлен из бэкапа"
-fi
+            # Восстанавливаем .env если пропал
+            if [ ! -f .env.production ] && [ -f .env.backup ]; then
+              cp .env.backup .env.production
+              echo ".env.production восстановлен из бэкапа"
+            fi
 
-# Устанавливаем зависимости
-npm install
+            # Устанавливаем зависимости
+            npm install
 
-# Собираем проект (Next.js требует билд для продакшена)
-npm run build
+            # Собираем Next.js
+            npm run build
 
-# Перезапускаем через PM2 (без простоя)
-pm2 restart fast-door-web
+            # Перезапуск PM2
+            pm2 restart fast-door-web
 
-echo "Frontend деплой завершён"
+            echo "Frontend деплой завершён"
 
+            echo ""
+            echo "NGINX"
 
-# RELOAD NGINX
+            # Перезагрузка nginx
+            sudo nginx -t && sudo systemctl reload nginx
 
-echo ""
-echo "NGINX"
+            echo "Nginx перезапущен"
 
-# Проверяем конфиг и перезагружаем
-sudo nginx -t && sudo systemctl reload nginx
-echo "Nginx перезапущен"
+            echo ""
+            echo "Очистка"
 
-# CLEANUP
-echo ""
-echo "Очистка"
+            # Удаляем временный бэкап
+            rm -f ~/fast-door-web/.env.backup
 
-# Удаляем временный бэкап
-rm -f ~/fast-door-web/.env.production
+            # Чистим кэш npm
+            npm cache clean --force 2>/dev/null || true
 
-# Чистим кэш npm 
-npm cache clean --force 2>/dev/null || true
+            echo "Очистка завершена"
 
-echo "Очистка завершена"
+            echo ""
+            echo "Итоговый статус"
 
+            pm2 status
 
-# STATUS CHECK
-echo ""
-echo "Итоговый статус"
-
-pm2 status
-
-echo ""
-echo "DEPLOY SUCCESSFUL"
-echo "Сайт: https://fast-door.ru"
+            echo ""
+            echo "DEPLOY SUCCESSFUL"
+            echo "Сайт: https://fast-door.ru"

@@ -15,6 +15,7 @@ import TableButton from "../tableButton/tableButton";
 import InstallerChoiceSelect from '../installerChoice/installerChoice';
 import { installerStore } from "@/stores/installerStore";
 import CommentInput from "../installerCommentInput/installerCommentInput";
+import Loader from "../loader/loader";
 
 interface CustomTableProps {
     role: string;
@@ -26,7 +27,7 @@ interface CustomTableProps {
 }
 
 export default observer(function CustomTable({ role, pagination, initialPage, initialSize, selectedTable }: CustomTableProps) {
-    const { getUsersData, error, deleteOrder } = tableStore;
+    const { getUsersData, error, deleteOrder, loading } = tableStore;
     const [page, setPage] = useState<number>(typeof initialPage === 'number' ? Math.max(0, initialPage - 1) : 0);
     const [size, setSize] = useState<number>(initialSize ?? 10);
     const router = useRouter();
@@ -46,8 +47,17 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
             return <th className="table-btns">Действие</th>;
         }
     }
+    
 
     const users = tableStore.data ?? [];
+
+        if (loading) {
+        return (
+            <div className="custom-table-wrapper">
+                <Loader spinType={false} />
+            </div>
+        );
+    }
 
     const handleChangeInstaller = (itemId: number, installerFullName: string) => {
         setSelectedInstallers(prev => ({

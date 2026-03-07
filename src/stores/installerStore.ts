@@ -1,3 +1,4 @@
+
 import { makeAutoObservable, runInAction } from "mobx";
 
 class InstallerStore {
@@ -85,6 +86,73 @@ class InstallerStore {
             });
         }
         finally {
+            this.loading = false;
+        }
+    }
+
+        getInstallerById = async (id: number) => {
+        this.loading = true;
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/installer/${id}`, {
+                credentials: "include",
+                method: "GET"
+            });
+
+            const result = await response.json();
+            console.log(result);            
+           return result;
+           
+        } catch (error) {
+            runInAction(() => {
+                console.error("Failed to update installer:", error);
+                this.error = "Не удалось получить установщика";
+            });
+        } finally {
+            this.loading = false;
+        }
+    }
+
+
+    createInstaller = async (data: { fullName: string; phone: string }) => {
+        this.loading = true;
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listInstallers/create?fullName=${data.fullName}&phone=${data.phone}`, {
+                credentials: "include",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+            const result = await response.text();
+            console.log("Создание установщика успешно:", result);
+      
+        } catch (error) {
+            runInAction(() => {
+                console.error("Failed to create installer:", error);
+                this.error = "Не удалось создать установщика";
+            });
+        } finally {
+            this.loading = false;
+        }
+    }
+
+        editInstaller = async (id: number, data: { fullName: string; phone: string }) => {
+        this.loading = true;
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/installer/${id}?fullName=${data.fullName}&phone=${data.phone}`, {
+                credentials: "include",
+                method: "PATCH",
+                body: JSON.stringify(data),
+            });
+            const result = await response.text();
+            console.log("Обновление установщика успешно:", result);
+        } catch (error) {
+            runInAction(() => {
+                console.error("Failed to update installer:", error);
+                this.error = "Не удалось обновить установщика";
+            });
+        } finally {
             this.loading = false;
         }
     }

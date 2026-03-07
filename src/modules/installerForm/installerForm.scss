@@ -1,0 +1,129 @@
+.installer-form {
+    display: flex;
+    flex-direction: column;
+    row-gap: 28px;
+    background-color: #8B6649;
+    border-radius: 30px;
+    max-width: 873px;
+    width: 100%;
+    padding: 55px 70px 60px;
+    color: #fff;
+
+    &__error {
+        color: #ff6b6b;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+
+    .error {
+        box-shadow: 0 0 0 2px #ff6b6b !important;
+    }
+
+    &-titleWrapper {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    &__title {
+        font-size: 28px;
+        font-weight: 600;
+        text-align: center;
+    }
+
+    &__label {
+        display: flex;
+        flex-direction: column;
+        row-gap: 10px;
+        color: #E9E9E9;
+        font-size: 24px;
+        font-weight: 500;
+    }
+
+    &__input {
+        width: 100%;
+        height: 56px;
+        border-radius: 20px;
+        border: none;
+        padding: 0 22px;
+        font-size: 18px;
+        background: #E6E6E6;
+        color: #333;
+        outline: none;
+        transition: 0.2s;
+
+        &::placeholder {
+            color: #9C8C7C;
+        }
+
+        &:focus {
+            box-shadow: 0 0 0 2px #d4b79f;
+        }
+    }
+
+    &__actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
+
+    &__button {
+        width: 230px;
+        height: 60px;
+        border-radius: 30px;
+        font-size: 22px;
+        background: #D9D9D9;
+        color: #7A5A40;
+        transition: 0.2s;
+
+        &:hover {
+            background: #ececec;
+        }
+    }
+}
+
+
+@media (max-width: 768px) {
+    .installer-form {
+        padding: 40px 30px;
+        row-gap: 22px;
+
+        &__title {
+            font-size: 24px;
+        }
+
+        &__label {
+            font-size: 18px;
+        }
+
+        &__input {
+            height: 50px;
+            font-size: 16px;
+        }
+
+        &__button {
+            width: 100%;
+            height: 52px;
+            font-size: 18px;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .installer-form {
+        padding: 30px 20px;
+        border-radius: 20px;
+
+        &__title {
+            font-size: 20px;
+        }
+
+        &__label {
+            font-size: 16px;
+        }
+
+        &__input {
+            height: 46px;
+        }
+    }
+}

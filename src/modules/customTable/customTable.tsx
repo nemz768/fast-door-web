@@ -103,7 +103,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                 <td>{item.fullName}</td>
                                 <td>{item.phone}</td>
                                 <td className="custom-table-tbody-centered">
-                                    <TableButton src={editW.src} alt="edit" />
+                                    <TableButton onClick={()=> router.push(`./edit/${item.id}`)} src={editW.src} alt="edit" />
                                     <TableButton src={removeW.src} alt="remove" onClick={async()=> {
                                         await installerStore.deleteInstaller(item.id);
                                         getUsersData(role, page, size, selectedTable);

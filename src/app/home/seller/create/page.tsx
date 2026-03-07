@@ -15,7 +15,7 @@ const CreateOrderForm = observer(() => {
 
     return (
         <ProtectedRoute allowedRoles={['salespeople']}>
-            <HeaderCreation flag={true}/>
+            <HeaderCreation route="./" />
             <div className="create-form-wrapper">
                 <Title pageTitle={"Создание нового заказа"} />
                 <SellerForm/>

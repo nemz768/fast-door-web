@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 class TableStore {
     data: any = null;
@@ -160,20 +160,50 @@ class TableStore {
     }
 
     deleteOrder = async (orderId: number) => {
-         const result = await this.methodsOfOrder(
-        `${process.env.NEXT_PUBLIC_API_URL}/delete?id=${orderId}`,
-        "DELETE"
-    );
-
-    if (!this.error && Array.isArray(this.data)) {
-        console.log("Удаление успешно:", result);
-
-        this.data = this.data.filter(
-            (order: any) => order.id !== orderId
+        const result = await this.methodsOfOrder(
+            `${process.env.NEXT_PUBLIC_API_URL}/delete?id=${orderId}`,
+            "DELETE"
         );
-    }
+
+        if (!this.error && Array.isArray(this.data)) {
+            console.log("Удаление успешно:", result);
+
+            this.data = this.data.filter(
+                (order: any) => order.id !== orderId
+            );
+        }
     }
 
+    postInstallerOrder = async (orderId: number, installerFullName: string, frontDoorQuantity: number, inDoorQuantity: number, installerComment: string = "") => {
+        this.loading = true;
+        this.error = null;
+
+        const payload = {
+            orderId,
+            installerFullName,
+            installerComment,
+            frontDoorQuantity,
+            inDoorQuantity,
+        };
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/mainInstaller`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify(payload),
+            });
+
+            if (!response.ok) throw new Error(`Ошибка ${response.status}`);
+            return await response.text();
+        } catch (err: any) {
+            console.error("Ошибка выбора установщика:", err);
+            this.error = err.message;
+            throw err;
+        } finally {
+            this.loading = false;
+        }
+    };
 
 }
 

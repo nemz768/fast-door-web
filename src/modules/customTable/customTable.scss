@@ -34,6 +34,7 @@
             overflow: hidden;
             -webkit-box-orient: vertical;
             word-break: break-word;
+            height: 75px;
         }
 
         tr:nth-child(odd) {
@@ -44,6 +45,17 @@
             text-align: center;
         }
 
+    }
+}
+
+.doorsTable {
+    thead {
+        th {
+            height: 67px;
+        }
+    }
+    td {
+        height: 75px;
     }
 }
 
@@ -59,6 +71,13 @@
     width: 295px;
 }
 
+.table-count {
+    width: 103px;
+}
+
+.table-installer {
+    width: 185px;
+}
 
 .doorsTable-container {
     display: flex;

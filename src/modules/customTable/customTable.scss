@@ -34,7 +34,7 @@
             overflow: hidden;
             -webkit-box-orient: vertical;
             word-break: break-word;
-            height: 75px;
+            height: 125px;
         }
 
         tr:nth-child(odd) {
@@ -54,6 +54,7 @@
             height: 67px;
         }
     }
+
     td {
         height: 75px;
     }
@@ -68,7 +69,8 @@
 }
 
 .table-comment {
-    width: 295px;
+    width: 210px;
+    max-width: 210px;
 }
 
 .table-count {
@@ -76,7 +78,8 @@
 }
 
 .table-installer {
-    width: 185px;
+    width: 210px;
+    max-width: 210px;
 }
 
 .doorsTable-container {

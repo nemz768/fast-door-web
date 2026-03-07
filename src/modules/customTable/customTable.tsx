@@ -12,7 +12,9 @@ import removeW from '@/assets/images/removeW.png'
 import confirmW from '@/assets/images/confirmW.png'
 import editW from '@/assets/images/editW.png'
 import TableButton from "../tableButton/tableButton";
-import InstallerChoiceSelect from "../InstallerChoiceSelect/InstallerChoiceSelect";
+import InstallerChoiceSelect from '../installerChoiceSelect/InstallerChoiceSelect';
+import { installerStore } from "@/stores/installerStore";
+import CommentInput from "../installerCommentInput/installerCommentInput";
 
 interface CustomTableProps {
     role: string;
@@ -23,14 +25,15 @@ interface CustomTableProps {
 
 }
 
-
 export default observer(function CustomTable({ role, pagination, initialPage, initialSize, selectedTable }: CustomTableProps) {
     const { getUsersData, error, deleteOrder } = tableStore;
     const [page, setPage] = useState<number>(typeof initialPage === 'number' ? Math.max(0, initialPage - 1) : 0);
     const [size, setSize] = useState<number>(initialSize ?? 10);
     const router = useRouter();
+    const [selectedComments, setSelectedComments] = useState<Record<number, string>>({});
     const [selectedInstallers, setSelectedInstallers] = useState<Record<number, string>>({});
     console.log("CustomTable rendered", { role, selectedTable, page, size });
+    const [editingRowId, setEditingRowId] = useState<number | null>(null);
 
     useEffect(() => {
         getUsersData(role, page, size, selectedTable);
@@ -45,6 +48,43 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
     }
 
     const users = tableStore.data ?? [];
+
+    const handleChangeInstaller = (itemId: number, installerFullName: string) => {
+        setSelectedInstallers(prev => ({
+            ...prev,
+            [itemId]: installerFullName
+        }));
+    };
+
+    const handleSubmitInstaller = async (item: any) => {
+        const installerFullName = selectedInstallers[item.id];
+
+        if (!installerFullName) {
+            alert("Выберите установщика!");
+            return;
+        }
+
+        try {
+            await tableStore.postInstallerOrder(
+                item.id,
+                installerFullName,
+                item.frontDoorQuantity,
+                item.inDoorQuantity,
+                selectedComments[item.id] || ""
+            );
+
+            await installerStore.getInstallersWorkloadByDate(item.dateOrder);
+
+
+            tableStore.data = tableStore.data.filter(
+                (order: any) => order.id !== item.id
+            );
+
+        } catch (err) {
+            console.error("Ошибка при выборе установщика:", err);
+            alert("Не удалось выбрать установщика");
+        }
+    };
 
     function neccessaryTables() {
         if (selectedTable === 'installerTable') {
@@ -64,7 +104,10 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                 <td>{item.phone}</td>
                                 <td className="custom-table-tbody-centered">
                                     <TableButton src={editW.src} alt="edit" />
-                                    <TableButton src={removeW.src} alt="remove" />
+                                    <TableButton src={removeW.src} alt="remove" onClick={async()=> {
+                                        await installerStore.deleteInstaller(item.id);
+                                        getUsersData(role, page, size, selectedTable);
+                                    }} />
                                 </td>
                             </tr>
                         ))}
@@ -101,8 +144,10 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                     </thead>
                     <tbody className="custom-table-tbody">
 
-                        {users.map((item: any) => (
-                            <tr key={item.id}>
+                        {users.map((item: any) => {
+                            const isEditing = editingRowId === item.id;
+
+                            return (<tr key={item.id}>
                                 <td className="table-fullName">{item.fullName || "-"}</td>
                                 <td className="table-address">{item.address || "-"}</td>
                                 <td className="custom-table-tbody-centered">{item.phone || "-"}</td>
@@ -110,18 +155,66 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                 <td className="custom-table-tbody-centered table-count">{item.frontDoorQuantity || "-"}</td>
                                 <td className="custom-table-tbody-centered table-count">{item.inDoorQuantity || "-"}</td>
                                 <td className="table-comment">{item.messageSeller || "-"}</td>
-                                <td className="table-comment">{item.messageMainInstaller || "-"}</td>
-                                <td className="custom-table-tbody-centered table-installer">{item.installerName || "-"}</td>
+                                <td className="table-comment">
+                                    {isEditing ? (
+                                        <CommentInput
+                                            value={selectedComments[item.id] || item.messageMainInstaller || ""}
+                                            onChange={(val) =>
+                                                setSelectedComments(prev => ({
+                                                    ...prev,
+                                                    [item.id]: val
+                                                }))
+                                            }
+                                        />
+                                    ) : (
+                                        item.messageMainInstaller || "-"
+                                    )}
+                                </td>
+                                <td className="custom-table-tbody-centered table-installer">
+                                    {isEditing ? (
+                                        <InstallerChoiceSelect
+                                            date={item.dateOrder}
+                                            selectedInstaller={selectedInstallers[item.id]}
+                                            onChange={(installerFullName) =>
+                                                handleChangeInstaller(item.id, installerFullName)
+                                            }
+                                        />
+                                    ) : (
+                                        item.installerName || "-"
+                                    )}
+                                </td>
                                 <td>{item.nickname || "-"}</td>
                                 <td className="table-btns custom-table-tbody-centered">
-                                    <TableButton src={editW.src} alt="edit" />
-                                    <TableButton src={removeW.src} alt="remove" onClick={() => {
-                                        deleteOrder(item.id)
-                                        getUsersData(role, page, size, selectedTable);
-                                    }} />
+                                    {isEditing ? (
+                                        <TableButton
+                                            src={confirmW.src}
+                                            alt="confirm"
+                                            onClick={async () => {
+                                                await handleSubmitInstaller(item);
+                                                setEditingRowId(null);
+                                                getUsersData(role, page, size, selectedTable);
+                                            }}
+                                        />
+                                    ) : (
+                                        <TableButton
+                                            src={editW.src}
+                                            alt="edit"
+                                            onClick={() => setEditingRowId(item.id)}
+                                        />
+                                    )}
+
+                                    <TableButton
+                                        src={removeW.src}
+                                        alt="remove"
+                                        onClick={() => {
+                                            deleteOrder(item.id);
+                                            getUsersData(role, page, size, selectedTable);
+                                        }}
+                                    />
                                 </td>
                             </tr>
-                        ))}
+                            );
+                        })}
                     </tbody>
                 </table>
             )
@@ -154,7 +247,19 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                 <td className="custom-table-tbody-centered table-count">{item.frontDoorQuantity || "-"}</td>
                                 <td className="custom-table-tbody-centered table-count">{item.inDoorQuantity || "-"}</td>
                                 <td className="table-comment">{item.messageSeller || "-"}</td>
-                                {role === 'main' && <td className="table-comment">{item.messageMainInstaller || "-"}</td>}
+                                {role === 'main' && (
+                                    <td className="table-comment">
+                                        <CommentInput
+                                            value={selectedComments[item.id] || item.messageMainInstaller || ""}
+                                            onChange={(val) =>
+                                                setSelectedComments(prev => ({
+                                                    ...prev,
+                                                    [item.id]: val
+                                                }))
+                                            }
+                                        />
+                                    </td>
+                                )}
                                 {(role === 'salespeople' || role === 'administrator') && <td className="custom-table-tbody-centered table-installer">{item.installerName || "-"}</td>}
                                 {role === 'administrator' && <td className="custom-table-tbody-centered">{item.nickname || "-"}</td>}
                                 {role === 'main' && (
@@ -163,7 +268,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                             date={item.dateOrder}
                                             selectedInstaller={selectedInstallers[item.id]}
                                             onChange={(installerFullName) =>
-                                                setSelectedInstallers(prev => ({ ...prev, [item.id]: installerFullName }))
+                                                handleChangeInstaller(item.id, installerFullName)
                                             }
                                         />
                                     </td>
@@ -180,29 +285,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                         <TableButton
                                             src={confirmW.src}
                                             alt="confirm"
-                                            onClick={async () => {
-                                                const installerFullName = selectedInstallers[item.id];
-                                                if (!installerFullName) {
-                                                    alert("Выберите установщика!");
-                                                    return; // не отправляем пустое имя
-                                                }
-
-                                                try {
-                                                    await tableStore.postInstallerOrder(
-                                                        item.id,
-                                                        installerFullName,
-                                                        item.frontDoorQuantity,
-                                                        item.inDoorQuantity,
-                                                        item.messageMainInstaller || ""
-                                                    );
-
-                                                    alert("Установщик успешно выбран!");
-                                                    getUsersData(role, page, size, selectedTable); // обновляем таблицу
-                                                } catch (err) {
-                                                    console.error("Ошибка при выборе установщика:", err);
-                                                    alert("Не удалось выбрать установщика");
-                                                }
-                                            }}
+                                            onClick={() => handleSubmitInstaller(item)}
                                         />
                                     </td>
                                 )}

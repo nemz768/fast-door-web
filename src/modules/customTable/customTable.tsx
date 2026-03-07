@@ -12,7 +12,7 @@ import removeW from '@/assets/images/removeW.png'
 import confirmW from '@/assets/images/confirmW.png'
 import editW from '@/assets/images/editW.png'
 import TableButton from "../tableButton/tableButton";
-import InstallerChoiceSelect from '../installerChoiceSelect/InstallerChoiceSelect';
+import InstallerChoiceSelect from '../installerChoiceSelect/installerChoiceSelect';
 import { installerStore } from "@/stores/installerStore";
 import CommentInput from "../installerCommentInput/installerCommentInput";
 

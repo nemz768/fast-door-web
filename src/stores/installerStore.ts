@@ -35,7 +35,6 @@ class InstallerStore {
     };
 
     getInstallersWorkloadByDate = async (date: string) => {
-
         this.loading = true;
 
         try {
@@ -44,11 +43,13 @@ class InstallerStore {
             });
             const data = await res.json();
 
+            const items = Array.isArray(data) ? data : data.workload || []; 
+
             const map: Record<string, { front: number; in: number }> = {};
-            data.forEach((item: any) => {
+            items.forEach((item: any) => {
                 map[item.installerFullName] = {
                     front: item.frontDoorQuantity || 0,
-                    in: item.inDoorQuantity || 0
+                    in: item.inDoorQuantity || 0,
                 };
             });
 
@@ -57,7 +58,7 @@ class InstallerStore {
             });
         } catch (error) {
             runInAction(() => {
-                console.error("Failed to fetch installers:", error);
+                console.error("Failed to fetch installers workload:", error);
                 this.error = "Не удалось получить загруженность работника";
             });
         } finally {
@@ -90,7 +91,7 @@ class InstallerStore {
         }
     }
 
-        getInstallerById = async (id: number) => {
+    getInstallerById = async (id: number) => {
         this.loading = true;
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/installer/${id}`, {
@@ -99,9 +100,9 @@ class InstallerStore {
             });
 
             const result = await response.json();
-            console.log(result);            
-           return result;
-           
+            console.log(result);
+            return result;
+
         } catch (error) {
             runInAction(() => {
                 console.error("Failed to update installer:", error);
@@ -126,7 +127,7 @@ class InstallerStore {
             });
             const result = await response.text();
             console.log("Создание установщика успешно:", result);
-      
+
         } catch (error) {
             runInAction(() => {
                 console.error("Failed to create installer:", error);
@@ -137,7 +138,7 @@ class InstallerStore {
         }
     }
 
-        editInstaller = async (id: number, data: { fullName: string; phone: string }) => {
+    editInstaller = async (id: number, data: { fullName: string; phone: string }) => {
         this.loading = true;
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/installer/${id}?fullName=${data.fullName}&phone=${data.phone}`, {

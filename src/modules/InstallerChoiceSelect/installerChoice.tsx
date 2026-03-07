@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { installerStore } from "@/stores/installerStore";
-import "./installerChoiceSelect.scss";
+import "./InstallerChoiceSelect.scss";
 
 interface InstallerChoiceSelectProps {
   date: string;

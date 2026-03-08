@@ -19,7 +19,7 @@ export default function RootLayout({
         <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:url" content="https://fast-door.ru/login" />
+        <meta property="og:url" content="https://fast-door.ru" />
         <meta property="og:type" content="website" />
         <meta property="og:locale" content="ru_RU" />
 
@@ -27,7 +27,7 @@ export default function RootLayout({
         <meta name="description" content="Fast-Door — система управления установщиками дверей в Новосибирске. Планирование, учет и контроль работы установщиков." />
         <meta name="keywords" content="Fast-Door, двери, установка дверей, контроль установщиков, отчетность, Новосибирск" />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://fast-door.ru/login" />
+        <link rel="canonical" href="https://fast-door.ru" />
 
       </head>
       <body>

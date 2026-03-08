@@ -313,8 +313,8 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
         <>
             <div className="custom-table-wrapper">
                 {users.length > 0 ? neccessaryTables() : (
-                    <div>
-                        <p>Заказов пока нет</p>
+                    <div className="emptyOrders-block">
+                        {role === 'main' && selectedTable === 'installerTable' ? <p>Установщиков пока нет</p>: <p>Заказов пока нет</p>}
                     </div>
                 )}
             </div>

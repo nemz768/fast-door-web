@@ -6,6 +6,7 @@ class TableStore {
     totalPages: number = 0;
     loading: boolean = false;
     isInitialized: Boolean = false;
+    success: string | null = null;
 
     constructor() {
         makeAutoObservable(this);
@@ -30,7 +31,13 @@ class TableStore {
             console.log("Fetched data:", data);
 
             this.totalPages = data.totalPages;
+            if (!response.ok) {
+                runInAction(() => {
+                    console.error("Failed to get table data:", data);
+                    this.error = `Не удалось получить данные таблицы: ${response.status}`;
+                });
 
+            }
             return data;
         }
         catch (error: any) {
@@ -120,44 +127,50 @@ class TableStore {
     methodsOfOrder = async (
         url: string,
         method: string,
-        body?: Record<string, unknown>
+        body?: Record<string, unknown>,
+        success?: string | null,
+        errorMessage?: string | null
     ) => {
-        this.loading = true;
-        this.error = null;
+        runInAction(() => {
+            this.loading = true;
+            this.error = null;
+            this.success = null; // <-- сброс предыдущего success
+        });
 
         try {
             const options: RequestInit = {
                 method,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include'
             };
-
-            if (body) {
-                options.body = JSON.stringify(body);
-            }
+            if (body) options.body = JSON.stringify(body);
 
             const response = await fetch(url, options);
-
-            if (!response.ok) {
-                throw new Error(`Ошибка ${response.status}`);
-            }
             const contentType = response.headers.get("content-type");
 
-            if (contentType && contentType.includes("application/json")) {
-                return await response.json();
-            } else {
-                return await response.text();
+            if (!response.ok) {
+                runInAction(() => {
+                    this.error = errorMessage ? `${errorMessage}: ${response.status}` : `Ошибка запроса: ${response.status}`;
+                });
+                return;
             }
 
-        } catch (error: any) {
-            console.error(error);
-            this.error = error.message;
+            runInAction(() => {
+                if (success) this.success = success;
+            });
+
+            if (contentType && contentType.includes("application/json")) return await response.json();
+            return await response.text();
+
+        } catch (err: any) {
+            runInAction(() => {
+                this.error = err.message || "Сетевая ошибка";
+            });
+            console.error(err);
         } finally {
-            this.loading = false;
+            runInAction(() => { this.loading = false; });
         }
-    }
+    };
 
     deleteOrder = async (orderId: number) => {
         const result = await this.methodsOfOrder(
@@ -166,17 +179,26 @@ class TableStore {
         );
 
         if (!this.error && Array.isArray(this.data)) {
-            console.log("Удаление успешно:", result);
-
-            this.data = this.data.filter(
-                (order: any) => order.id !== orderId
-            );
+            runInAction(() => {
+                this.data = this.data.filter((order: any) => order.id !== orderId);
+                this.success = "Заказ успешно удален";
+            });
         }
+
     }
 
-    postInstallerOrder = async (orderId: number, installerFullName: string, frontDoorQuantity: number, inDoorQuantity: number, installerComment: string = "") => {
-        this.loading = true;
-        this.error = null;
+    postInstallerOrder = async (
+        orderId: number,
+        installerFullName: string,
+        frontDoorQuantity: number,
+        inDoorQuantity: number,
+        installerComment: string = ""
+    ) => {
+        runInAction(() => {
+            this.loading = true;
+            this.error = null;
+            this.success = null;
+        });
 
         const payload = {
             orderId,
@@ -194,14 +216,31 @@ class TableStore {
                 body: JSON.stringify(payload),
             });
 
-            if (!response.ok) throw new Error(`Ошибка ${response.status}`);
-            return await response.text();
+            const text = await response.text();
+
+            if (!response.ok) {
+                runInAction(() => {
+                    this.error = `Не удалось назначить установщика: ${response.status}`;
+                });
+                return;
+            }
+
+            runInAction(() => {
+                this.success = "Установщик успешно назначен";
+            });
+
+            return text;
+
         } catch (err: any) {
+            runInAction(() => {
+                this.error = err.message || "Сетевая ошибка";
+            });
             console.error("Ошибка выбора установщика:", err);
-            this.error = err.message;
             throw err;
         } finally {
-            this.loading = false;
+            runInAction(() => {
+                this.loading = false;
+            });
         }
     };
 

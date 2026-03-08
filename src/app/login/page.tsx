@@ -12,7 +12,7 @@ import Logo from "@/modules/logo/Logo";
 const LoginPage = () => {
   const router = useRouter();
 
-  const [getUserData, setGetUserData] = useState({ username: '', password: '' });
+  const [getUserData, setGetUserData] = useState({ username: '', password: '', rememberMe: false });
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const rolesDirections = {
@@ -53,8 +53,11 @@ const LoginPage = () => {
           </svg>
 
           <Input
-            onChange={(event) =>
+            onChange={(event) => {
+              authStore.error = null;
+              authStore.validationErrors.username = "";
               setGetUserData({ ...getUserData, [event.target.name]: event.target.value })
+            }
             }
             name="username"
             placeholder="Логин"
@@ -69,7 +72,11 @@ const LoginPage = () => {
             <path d="M7 11V7a5 5 0 0110 0v4" />
           </svg>
           <Input
-            onChange={(event) => setGetUserData({ ...getUserData, [event.target.name]: event.target.value })}
+            onChange={(event) => {
+              authStore.error = null;
+              authStore.validationErrors.password = "";
+              setGetUserData({ ...getUserData, [event.target.name]: event.target.value });
+            }}
             name="password"
             placeholder="Пароль"
             type={isPasswordVisible ? 'text' : 'password'}
@@ -97,13 +104,22 @@ const LoginPage = () => {
         </div>
         <div className="RememberMeAndRegister">
           <label htmlFor="rememberMe">
-            <input type="checkbox" id="rememberMe" />
+            <input
+              type="checkbox"
+              id="rememberMe"
+              checked={getUserData.rememberMe}
+              onChange={(event) =>
+                setGetUserData({
+                  ...getUserData,
+                  rememberMe: event.target.checked,
+                })
+              }
+            />
             Запомнить меня
           </label>
           <a href="#" onClick={() => router.push('/reg')}>Забыли пароль?</a>
         </div>
         <Button text={authStore.isLoading ? 'Вход...' : 'Войти'} onClick={handleSubmit} disabled={authStore.isLoading} type="submit" />
-
       </form>
     </div>
   );

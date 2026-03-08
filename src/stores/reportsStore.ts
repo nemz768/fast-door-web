@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 interface Order {
     id: number;
@@ -20,30 +20,49 @@ interface Report {
 
 class ReportsStore {
     error: string | null = null;
+    success: string | null = null;
     loading: boolean = false;
     data: Report[] = [];
     sellers: string[] = [];
-    
+
     constructor() {
         makeAutoObservable(this);
     }
 
-    fetchData = async (url: string, method: string, body?: object, fileName?: string) => {
-        this.loading = true;
-        this.error = null;
+    fetchData = async (
+        url: string,
+        method: string,
+        body?: object,
+        fileName?: string,
+        successMessage?: string,
+        errorMessage?: string
+    ) => {
+        runInAction(() => {
+            this.loading = true;
+            this.error = null;
+            this.success = null;
+        });
 
         try {
             const response = await fetch(url, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include', 
-                body: body ? JSON.stringify(body) : undefined
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: body ? JSON.stringify(body) : undefined,
             });
 
+            const contentType = response.headers.get("content-type");
+            let responseData: any = null;
+
+            if (contentType && contentType.includes("application/json")) {
+                const text = await response.text();
+                responseData = text ? JSON.parse(text) : null;
+            }
+
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorMsg = `${errorMessage}: ${response.status}`;
+                runInAction(() => { this.error = errorMsg; });
+                throw new Error(errorMsg);
             }
 
             if (method === 'GET' && fileName) {
@@ -56,97 +75,102 @@ class ReportsStore {
                 link.click();
                 link.remove();
                 window.URL.revokeObjectURL(downloadUrl);
-                return null;
-            } 
-            
-            const contentType = response.headers.get("content-type");
-            if (contentType && contentType.includes("application/json")) {
-                const text = await response.text();
-                const data = text ? JSON.parse(text) : null;
-                return data;
-            } else {
-                console.warn('unexpected content type:', contentType);
+
+                runInAction(() => { this.success = `Файл "${fileName}" успешно загружен`; });
                 return null;
             }
-        } catch (error) {
-            console.error(error);
-            this.error = error instanceof Error ? error.message : 'Unknown error';
-            throw error;
+
+            if (successMessage) {
+                runInAction(() => { this.success = successMessage; });
+            }
+
+            return responseData;
+        } catch (err: any) {
+            console.error(err);
+            runInAction(() => {
+                if (!this.error) {
+                    this.error = err instanceof Error ? err.message : errorMessage || 'Неизвестная ошибка запроса';
+                }
+            });
+            throw err;
         } finally {
-            this.loading = false;
+            runInAction(() => { this.loading = false; });
         }
-    }
+    };
+
+    getReportDownload = async (reportId: number, fileName: string) => {
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/report/download?reportId=${reportId}`;
+        await this.fetchData(
+            url,
+            "GET",
+            undefined,
+            fileName,
+            `Файл "${fileName}" успешно загружен`,
+            "Ошибка при скачивании отчета"
+        );
+    };
 
     getReportData = async () => {
-        const getReportsDataUrl = `${process.env.NEXT_PUBLIC_API_URL}/report/all`;
-        this.error = null;
-      
-        try {
-            const reports = await this.fetchData(getReportsDataUrl, "GET");
-            const cleanedReports = (reports || []).map((item: Report) => ({
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/report/all`;
+        return this.fetchData(
+            url,
+            "GET",
+            undefined,
+            undefined,
+            undefined,
+            "Не удалось загрузить отчеты"
+        ).then((reports: Report[]) => {
+            const cleanedReports = (reports || []).map((item) => ({
                 ...item,
                 title: item.title.replace(/admin/gi, '').trim()
             }));
-            this.data = cleanedReports;
-          
+            runInAction(() => { this.data = cleanedReports; });
             return this.data;
-        } catch (error) {
-            console.error('Error fetching reports:', error);
-            this.error = error instanceof Error ? error.message : 'Failed to fetch reports';
-            throw error;
-        }
+        });
     }
 
     postReportData = async (data: object) => {
-        const postReportsDataUrl = `${process.env.NEXT_PUBLIC_API_URL}/report/create`;
-        this.error = null;
-      
-        try {
-            await this.fetchData(postReportsDataUrl, "POST", data);
-            await this.getReportData();
-        } catch (error) {
-            console.error('Error sending reports:', error);
-            this.error = error instanceof Error ? error.message : 'Failed to send reports';
-            throw error;
-        }
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/report/create`;
+
+        await this.fetchData(
+            url,
+            "POST",
+            data,
+            undefined,
+            undefined,
+            "Не удалось создать отчет"
+        );
+
+        await this.getReportData();
+
+        runInAction(() => {
+            this.success = "Отчет успешно создан";
+        });
     }
 
-    getReportDownload = async (reportId: number, fileName: string) => {
-        const dataDownloadUrl = `${process.env.NEXT_PUBLIC_API_URL}/report/download?reportId=${reportId}`;
-        await this.fetchData(dataDownloadUrl, "GET", undefined, fileName);
-    }
+
 
     getSellersStore = async () => {
         const url = `${process.env.NEXT_PUBLIC_API_URL}/seller/all`;
-        this.error = null;
-        
-        try {
-            const response = await fetch(url, {
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' }
-            });
-            
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            
-            const contentType = response.headers.get("content-type");
-            if (!contentType || !contentType.includes("application/json")) {
-                throw new Error('unexpected response format for sellers');
-            }
+        const data = await this.fetchData(
+            url,
+            "GET",
+            undefined,
+            undefined,
+            undefined,
+            "Не удалось загрузить магазины"
+        );
 
-            const data = await response.json();
-            
+        runInAction(() => {
             if (Array.isArray(data) && data.length > 0) {
                 if (typeof data[0] === 'string') {
-                    this.sellers = data; 
+                    this.sellers = data;
                 } else if (typeof data[0] === 'object' && 'name' in data[0]) {
-                    this.sellers = data.map((item: any) => item.name); 
+                    this.sellers = data.map((item: any) => item.name);
                 }
             }
-        } catch (error) {
-            console.error('Ошибка загрузки магазинов:', error);
-            this.error = error instanceof Error ? error.message : 'Неизвестная ошибка';
-        }
-    };
+        });
+    }
 }
 
 export const reportsStore = new ReportsStore();

@@ -1,3 +1,4 @@
+import RequestStatus from "@/modules/RequestStatus/requestStatus";
 
 
 export default function RootLayout({
@@ -16,6 +17,7 @@ export default function RootLayout({
       </head>
       <body>
         {children}
+        <RequestStatus />
       </body>
     </html>
   );

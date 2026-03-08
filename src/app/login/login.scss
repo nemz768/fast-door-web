@@ -125,7 +125,7 @@
       }
 
       &.input-error {
-        border: 3px solid #C91212 !important;
+        border: 2px solid #b42318 !important;
         background-color: white;
       }
     }
@@ -172,33 +172,6 @@
     }
   }
 }
-
-.error-message {
-  color: #C91212;
-  font-size: 14px;
-  font-family: 'Montserrat', sans-serif;
-  font-weight: 500;
-  margin-top: 12px;
-  padding: 10px 16px;
-  background-color: rgba(231, 76, 60, 0.1);
-  border-left: 4px solid #C91212;
-  border-radius: 4px;
-  text-align: left;
-  animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 input[type="checkbox"] {
   appearance: none;
   width: 18px;
@@ -232,6 +205,16 @@ input[type="checkbox"] {
   height: 40px;
 }
 
+.login-error {
+  margin-top: 12px;
+  padding: 10px 12px;
+
+  color: #b42318; 
+  background: #fdecea; 
+  border-left: 4px solid #b42318; 
+
+  border-radius: 6px;
+}
 
 @media(max-width: 350px) {
   .login-page {

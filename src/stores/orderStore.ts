@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 type FieldConfig = {
     required?: boolean;
@@ -22,6 +22,7 @@ class OrderStore {
     errors: Record<string, string> = {};
     loading: boolean = false;
     error: string | null = null;
+    success: string | null = null;
 
     validationConfig: Record<keyof typeof this.payload, FieldConfig> = {
         fullName: { required: true, min: 3, max: 50, type: "string" },
@@ -187,10 +188,17 @@ class OrderStore {
             })
             const data = await response.json()
 
-            if (!response.ok) {
-                throw new Error(data.message || `Ошибка сервера: ${response.status}`);
-            }
-            console.log(data)
+             if (!response.ok) {
+                  runInAction(() => {
+                      console.error("Failed to create order:", data);
+                      this.error = `Не удалось создать заказ: ${response.status}`;
+                  });
+  
+                  return;
+              }
+              this.success = 'Заказ успешно создан';
+
+
             return data;
 
         } catch (error: any) {
@@ -219,6 +227,16 @@ class OrderStore {
 
             const response = await fetch(url, options)
             const data = await response.json();
+            
+             if (!response.ok) {
+                  runInAction(() => {
+                      console.error("Failed to get data for edit:", data);
+                      this.error = `Не удалось получить данные для редактирования: ${response.status}`;
+                  });
+  
+                  return;
+              }
+           
             return data;
         }
         catch (err: any) {
@@ -244,11 +262,17 @@ class OrderStore {
             const response = await fetch(url, options);
             const text = await response.text();
 
-            if (!response.ok) {
-                this.error = text || `HTTP ${response.status}`;
-                return false;
-            }
-            
+                if (!response.ok) {
+                  runInAction(() => {
+                      console.error("Failed to update order:", text);
+                      this.error = `Не удалось обновить заказ: ${response.status}`;
+                  });
+                  
+                  return;
+              }
+
+              this.success = 'Заказ успешно обновлен';
+
             if (!text.trim() || text === "{}") {
                 console.log("Заказ успешно обновлён (пустой ответ)");
                 return true;

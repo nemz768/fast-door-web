@@ -25,7 +25,7 @@ describe("AuthStore", () => {
     test("возвращает false если логин содержит запрещенные символы", () => {
       const result = store.validateCredentials({ username: "user@123", password: "1234" });
       expect(result).toBe(false);
-      expect(store.validationErrors.username).toBe("логин может содержать только буквы, цифры, дефис и подчеркивание");
+      expect(store.validationErrors.username).toBe("логин может содержать только латиницу, цифры, дефис и подчеркивание");
     });
 
     test("возвращает false если пароль пустой", () => {
@@ -35,7 +35,7 @@ describe("AuthStore", () => {
     });
 
     test("возвращает false если пароль меньше 4 символов", () => {
-      const result = store.validateCredentials({ username: "user", password: "123" });
+      const result = store.validateCredentials({ username: "user", password: "123"  });
       expect(result).toBe(false);
       expect(store.validationErrors.password).toBe("пароль должен содержать минимум 4 символа");
     });
@@ -56,7 +56,7 @@ describe("AuthStore", () => {
       json: async () => ({ role: "ADMIN" }),
     } as any);
 
-    const promise = store.login({ username: "user", password: "1234" });
+    const promise = store.login({ username: "user", password: "1234", rememberMe: false });
 
     expect(store.isLoading).toBe(true);
 
@@ -79,12 +79,12 @@ test("login 401 устанавливает правильную ошибку", a
   } as any);
 
   try {
-    await store.login({ username: "user", password: "1234" });
+    await store.login({ username: "user", password: "1234", rememberMe: false });
   } catch (err) {
 
   }
 
-  expect(store.error).toBe("неверные учетные данные. проверьте логин и пароль");
+  expect(store.error).toBe("Неверные учетные данные, проверьте логин и пароль");
   expect(store.isLoading).toBe(false);
 });
 
@@ -99,12 +99,12 @@ test("login 400 устанавливает правильную ошибку", a
   } as any);
 
   try {
-    await store.login({ username: "user", password: "1234" });
+    await store.login({ username: "user", password: "1234", rememberMe: false });
   } catch (err) {
    
   }
 
-  expect(store.error).toBe("некорректные данные. попробуйте снова");
+  expect(store.error).toBe("Некорректные данные, попробуйте снова");
   expect(store.isLoading).toBe(false);
 });
 
@@ -114,19 +114,19 @@ test("login network error", async () => {
   mockedFetch.mockRejectedValueOnce(new Error("network error"));
 
   try {
-    await store.login({ username: "user", password: "1234" });
+    await store.login({ username: "user", password: "1234", rememberMe: false });
   } catch (err) {
     
   }
 
-  expect(store.error).toBe("ошибка подключения.");
+  expect(store.error).toBe("Ошибка подключения, проверьте соединение и попробуйте снова");
   expect(store.isLoading).toBe(false);
 });
 
   test("login не вызывает fetch если данные невалидные", async () => {
     const mockedFetch = fetch as jest.MockedFunction<typeof fetch>;
 
-    const invalidCredentials = { username: "", password: "123" };
+    const invalidCredentials = { username: "", password: "123", rememberMe: false };
     const valid = store.validateCredentials(invalidCredentials);
     expect(valid).toBe(false);
 
@@ -143,7 +143,7 @@ test("login network error", async () => {
       json: async () => ({ role: "ADMIN" }),
     } as any);
 
-    await store.login({ username: "user", password: "1234" });
+    await store.login({ username: "user", password: "1234", rememberMe: false });
 
     expect(mockedFetch).toHaveBeenCalledWith(
       "https://fast-door.ru/api/login",
@@ -151,7 +151,7 @@ test("login network error", async () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ username: "user", password: "1234" }),
+        body: JSON.stringify({ username: "user", password: "1234", rememberMe: false }),
       })
     );
   });

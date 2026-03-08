@@ -23,7 +23,7 @@ export default function ListOrdersSeller() {
                              role="salespeople" 
                              pagination={true}
                              initialPage={0}
-                             initialSize={7}
+                             initialSize={6}
                          />
         </main>
         <Footer />      

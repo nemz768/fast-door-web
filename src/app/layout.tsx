@@ -9,11 +9,26 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <head>
-        <title>Fast-Door</title>
-        <link rel="icon" type="image/png" href="/favicon.png" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        <meta name="description" content="Fast-Door — система управления установщиками дверей в Новосибирске"></meta>
+        <title>Fast-Door — Управление установщиками дверей</title>
+
+        {/* Open Graph */}
+        <meta property="og:title" content="Fast-Door — Управление установщиками дверей" />
+        <meta property="og:description" content="Fast-Door — система управления установщиками дверей в Новосибирске. Планирование, учет и контроль работы установщиков." />
+        <meta property="og:image" content="/preview.png" />
+        <meta property="og:image:alt" content="Fast-Door — управление установщиками дверей" />
+        <meta property="og:image:type" content="image/png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:url" content="https://fast-door.ru/login" />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="ru_RU" />
+
+        {/* Стандартное SEO */}
+        <meta name="description" content="Fast-Door — система управления установщиками дверей в Новосибирске. Планирование, учет и контроль работы установщиков." />
+        <meta name="keywords" content="Fast-Door, двери, установка дверей, контроль установщиков, отчетность, Новосибирск" />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://fast-door.ru/login" />
+
       </head>
       <body>
         {children}

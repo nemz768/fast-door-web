@@ -1,6 +1,7 @@
 import { observer } from "mobx-react-lite";
 import { formatDate } from "../formatDate/formatDate";
 import { reportsStore } from "@/stores/reportsStore";
+import downloadW from '@/assets/images/downloadW.png'
 import './reports.scss'
 
 interface Report {
@@ -34,7 +35,7 @@ export default observer(function ReportList({ reports }: ReportListProps) {
                                         onClick={() => getReportDownload(item.id, item.title)} 
                                         className="reports-block-box-rep-download"
                                     >
-                                        D
+                                        <img src={downloadW.src} alt="D" />
                                     </button>
                                 </span>
                             </p>

@@ -183,10 +183,7 @@ const UniversalCalendar = observer(({
   };
 
   const handleModalSuccess = async () => {
-    if (modalDate) {
-      const updatedDate = new Date(modalDate.date);
-      setSelectedDates([updatedDate]);
-    }
+     setSelectedDates([]); 
     setIsModalOpen(false);
     setModalDate(null);
   };

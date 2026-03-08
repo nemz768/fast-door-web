@@ -57,10 +57,12 @@
             &::-webkit-scrollbar {
                 width: 8px;
             }
+
             &::-webkit-scrollbar-track {
-                background: #f1f1f1; 
+                background: #f1f1f1;
                 border-radius: 4px;
             }
+
             &::-webkit-scrollbar-thumb {
                 background: $default_color;
                 border-radius: 4px;
@@ -69,7 +71,7 @@
             scrollbar-width: thin;
             scrollbar-color: $default_color #f1f1f1;
         }
-    
+
         &-form {
             border-radius: 50px;
             display: flex;
@@ -122,7 +124,7 @@
 
                 &-input {
                     height: 49px;
-                    border: none!important;
+                    border: none !important;
 
                     @media (max-width: 480px) {
                         height: 42px;
@@ -133,7 +135,7 @@
 
         &-input {
             height: 49px;
-    
+
             @media (max-width: 480px) {
                 height: 42px;
             }
@@ -142,7 +144,7 @@
         @media (max-width: 768px) {
             width: 100%;
             max-width: 600px;
-            max-height: none; 
+            max-height: none;
         }
 
         &-title {
@@ -166,7 +168,7 @@
     &-box-rep {
         border: 3px solid $default_color;
         border-radius: 24px;
-        height: 70px; 
+        height: 70px;
         display: flex;
         align-items: center;
         background-color: #fff;
@@ -314,7 +316,7 @@
     border: 1px solid red !important;
     background-color: #fff5f5 !important;
     color: red !important;
-    
+
     &::placeholder {
         color: red !important;
         opacity: 1;
@@ -323,7 +325,7 @@
 
 .select-error {
     border: 1px solid red !important;
-    
+
     div {
         border-color: red !important;
     }
@@ -334,4 +336,28 @@
     flex-direction: column;
     gap: 5px;
     flex: 1;
+}
+
+.reports-block-box-rep {
+    border-right: none;
+
+    &-ptext-userTitle {
+        font-weight: 700;
+        font-style: Bold;
+        font-size: 18px;
+   
+
+    }
+
+    &-ptext-date {
+        font-weight: 400;
+        font-style: Regular;
+        font-size: 14px;
+    }
+}
+
+.reports-block-box-rep-download {
+    &:hover {
+        border: none;
+    }
 }

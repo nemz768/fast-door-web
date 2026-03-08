@@ -47,11 +47,11 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
             return <th className="table-btns">Действие</th>;
         }
     }
-    
+
 
     const users = tableStore.data ?? [];
 
-        if (loading) {
+    if (loading) {
         return (
             <div className="custom-table-wrapper">
                 <Loader spinType={false} />
@@ -113,8 +113,8 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                 <td>{item.fullName}</td>
                                 <td>{item.phone}</td>
                                 <td className="custom-table-tbody-centered">
-                                    <TableButton onClick={()=> router.push(`./edit/${item.id}`)} src={editW.src} alt="edit" />
-                                    <TableButton src={removeW.src} alt="remove" onClick={async()=> {
+                                    <TableButton onClick={() => router.push(`./edit/${item.id}`)} src={editW.src} alt="edit" />
+                                    <TableButton src={removeW.src} alt="remove" onClick={async () => {
                                         await installerStore.deleteInstaller(item.id);
                                         getUsersData(role, page, size, selectedTable);
                                     }} />
@@ -307,14 +307,19 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
         }
     }
 
-    if (error) return <div style={{ color: 'red' }}>Ошибка: {error}</div>;
 
     return (
         <>
             <div className="custom-table-wrapper">
                 {users.length > 0 ? neccessaryTables() : (
                     <div className="emptyOrders-block">
-                        {role === 'main' && selectedTable === 'installerTable' ? <p>Установщиков пока нет</p>: <p>Заказов пока нет</p>}
+                        {error && error.length > 0 ? (
+                            <p style={{color: 'red'}}>Ошибка - {error}</p>
+                        ) : role === 'main' && selectedTable === 'installerTable' ? (
+                            <p>Установщиков пока нет</p>
+                        ) : (
+                            <p>Заказов пока нет</p>
+                        )}
                     </div>
                 )}
             </div>

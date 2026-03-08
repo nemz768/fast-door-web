@@ -134,7 +134,7 @@ class TableStore {
         runInAction(() => {
             this.loading = true;
             this.error = null;
-            this.success = null; // <-- сброс предыдущего success
+            this.success = null; 
         });
 
         try {

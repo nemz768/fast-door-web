@@ -1,92 +1,78 @@
+.request-status-wrapper {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column-reverse; 
+  gap: 10px;
+  z-index: 9999;
+}
+
 .request-status {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
+  position: relative;
+  min-width: 460px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    min-width: 460px;
-
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
-
-    animation: slideInRight 0.35s ease;
+  animation: slideInRight 0.35s ease forwards;
 }
 
 .request-status.closing {
-    animation: slideOutRight 0.35s ease forwards;
+  animation: slideOutRight 0.35s ease forwards;
 }
 
 .request-status--error {
-    color: #ff6b6b;
-    background: rgba(255, 107, 107, 0.12);
-    border-right: 4px solid #ff6b6b;
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.12);
+  border-right: 4px solid #ff6b6b;
 }
 
 .request-status--success {
-    color: #6ee7b7;
-    background: rgba(110, 231, 183, 0.12);
-    border-right: 4px solid #6ee7b7;
+  color: #6ee7b7;
+  background: rgba(110, 231, 183, 0.12);
+  border-right: 4px solid #6ee7b7;
 }
 
 .request-status-close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    cursor: pointer;
-    font-weight: bold;
-    color: white;
-    z-index: 2;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
+  z-index: 2;
 }
 
 .request-status-close:hover {
-    opacity: 0.8;
+  opacity: 0.8;
 }
 
 .progress-bar {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 3px;
-    background-color: currentColor;
-    border-radius: 2px;
-    animation: progressBar 7s linear forwards;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background-color: currentColor;
+  border-radius: 2px;
+  animation: progressBar linear forwards;
 }
 
 @keyframes slideInRight {
-    from {
-        transform: translateX(120%);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateX(0);
-        opacity: 1;
-    }
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes slideOutRight {
-    from {
-        transform: translateX(0);
-        opacity: 1;
-    }
-
-    to {
-        transform: translateX(120%);
-        opacity: 0;
-    }
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(120%); opacity: 0; }
 }
 
 @keyframes progressBar {
-    from {
-        width: 100%;
-    }
-
-    to {
-        width: 0%;
-    }
+  from { width: 100%; }
+  to { width: 0%; }
 }

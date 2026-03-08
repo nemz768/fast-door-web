@@ -15,7 +15,7 @@ interface FormErrors {
 }
 
 export default observer(function Reports() {
-    const { error, postReportData, getSellersStore, sellers, data } = reportsStore;
+    const {postReportData, getSellersStore, sellers, data } = reportsStore;
     
     const [formData, setFormData] = useState({
         title: '',

@@ -7,55 +7,97 @@ import { tableStore } from "@/stores/tableStore";
 import { calendarStore } from "@/stores/calendarStore";
 import { installerStore } from "@/stores/installerStore";
 import { reportsStore } from "@/stores/reportsStore";
-import "./requestStatus.scss";
 import { orderStore } from "@/stores/orderStore";
+import "./requestStatus.scss";
 
 interface StoreWithStatus {
-  error: string | null;
-  success?: string | null;
+    error: string | null;
+    success?: string | null;
+    name?: string;
+}
+
+interface Notification {
+    id: number;
+    message: string;
+    status: "success" | "error";
+    closing?: boolean;
 }
 
 const stores: StoreWithStatus[] = [authStore, tableStore, calendarStore, installerStore, reportsStore, orderStore];
 
+let nextId = 1;
+
+const DISPLAY_DURATION = 3000; // 3 секунды
+const CLOSING_DURATION = 350;  // slideOutRight
+
 const RequestStatus = observer(() => {
-  const [closing, setClosing] = useState(false);
+    const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  // Всегда ищем активный стор
-  const activeStore = stores.find(store => store.error || store.success);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            stores.forEach(store => {
 
-  // Закрытие уведомления
-  const close = () => {
-    setClosing(true);
-    setTimeout(() => {
-      if (activeStore) {
-        activeStore.error = null;
-        if ('success' in activeStore) activeStore.success = null;
-      }
-      setClosing(false);
-    }, 350);
-  };
+                if (store.error) {
+                    addNotification(store.error, "error");
 
-  useEffect(() => {
-    if (!activeStore) return;
+                    setTimeout(() => {
+                        store.error = null;
+                    }, 0);
+                }
 
-    const timer = setTimeout(close, 7000);
-    return () => clearTimeout(timer);
-  }, [activeStore?.error, activeStore?.success]);
+                if (store.success) {
+                    addNotification(store.success, "success");
 
-  if (!activeStore) return null;
+                    setTimeout(() => {
+                        store.success = null;
+                    }, 0);
+                }
 
-  const status = activeStore.error ? "error" : "success";
-  const message = activeStore.error || activeStore.success;
+            });
+        }, 200);
 
-  return (
-    <div className={`request-status request-status--${status} ${closing ? "closing" : ""}`}>
-      <span>{message}</span>
+        return () => clearInterval(interval);
+    }, []);
+    const addNotification = (message: string, status: "success" | "error") => {
+        const id = nextId++;
+        setNotifications(prev => [{ id, message, status }, ...prev]);
+    };
 
-      <span className="request-status-close" onClick={close}>✕</span>
+    const startClosing = (id: number) => {
+        setNotifications(prev =>
+            prev.map(n => n.id === id ? { ...n, closing: true } : n)
+        );
+        setTimeout(() => {
+            setNotifications(prev => prev.filter(n => n.id !== id));
+        }, CLOSING_DURATION);
+    };
 
-      <div className="progress-bar"></div>
-    </div>
-  );
+    const closeNotification = (id: number) => startClosing(id);
+
+    return (
+        <div className="request-status-wrapper">
+            {notifications.map(n => (
+                <div
+                    key={n.id}
+                    className={`request-status request-status--${n.status} ${n.closing ? 'closing' : ''}`}
+                >
+                    <span>{n.message}</span>
+                    <span className="request-status-close" onClick={() => closeNotification(n.id)}>✕</span>
+                    <div
+                        className="progress-bar"
+                        style={{
+                            animationDuration: `${DISPLAY_DURATION}ms`,
+                            animationPlayState: n.closing ? "paused" : "running"
+                        }}
+
+                        onAnimationEnd={() => {
+                            if (!n.closing) startClosing(n.id);
+                        }}
+                    ></div>
+                </div>
+            ))}
+        </div>
+    );
 });
 
 export default RequestStatus;

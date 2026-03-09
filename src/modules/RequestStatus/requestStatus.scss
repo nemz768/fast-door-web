@@ -3,7 +3,7 @@
   bottom: 20px;
   right: 20px;
   display: flex;
-  flex-direction: column-reverse; 
+  flex-direction: column-reverse;
   gap: 10px;
   z-index: 9999;
 }
@@ -27,15 +27,15 @@
 }
 
 .request-status--error {
-  color: #ff6b6b;
-  background: rgba(255, 107, 107, 0.12);
-  border-right: 4px solid #ff6b6b;
+  color: #ffffff; 
+  background: #ff4c4c;
+  border-right: 4px solid #ff0000; 
 }
 
 .request-status--success {
-  color: #6ee7b7;
-  background: rgba(110, 231, 183, 0.12);
-  border-right: 4px solid #6ee7b7;
+  color: #ffffff; 
+  background: #34d399; 
+  border-right: 4px solid #059669; 
 }
 
 .request-status-close {
@@ -63,16 +63,35 @@
 }
 
 @keyframes slideInRight {
-  from { transform: translateX(120%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @keyframes slideOutRight {
-  from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(120%); opacity: 0; }
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
 }
 
 @keyframes progressBar {
-  from { width: 100%; }
-  to { width: 0%; }
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
 }

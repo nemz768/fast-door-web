@@ -2,6 +2,7 @@ import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { installerStore } from "@/stores/installerStore";
 import "./InstallerChoiceSelect.scss";
+import '@/modules/customTable/customTable.scss';
 
 interface InstallerChoiceSelectProps {
   date: string;
@@ -23,7 +24,7 @@ const InstallerChoiceSelect = observer(({ date, selectedInstaller, onChange }: I
       onChange={(e) => onChange(e.target.value)}
       name="installer"
     >
-      <option value="">Выберите установщика</option>
+      <option value="">Выбрать</option>
       {installerStore.installers.map(installer => {
         const w = workload[installer.fullName];
         return (

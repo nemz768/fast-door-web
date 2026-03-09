@@ -1,8 +1,6 @@
-
-
 // Color variables
-$error-color: #C91212;
-$error-border: #C91212;
+$error-color: #ff6b6b;
+$error-border: #ff6b6b;
 $error-bg: transparent;
 $error-message-bg: rgba(211, 47, 47, 0.08);
 $input-border-color: #e9e9e9;
@@ -39,8 +37,9 @@ $toggle-size: 40px;
     border: 3px solid transparent;
     border-radius: $input-border-radius;
     font-size: $input-font-size;
-  
+    font-family: 'Montserrat', sans-serif;
     transition: $input-transition;
+    color: #8b6649;
 
     &::placeholder {
       color: #8b6649;
@@ -48,19 +47,15 @@ $toggle-size: 40px;
 
     &:focus {
       outline: none;
-      border: 2px solid #8b6649;
+      border: 3px solid #8b6649;
       background-color: white;
     }
 
-   
-    &.input-error {
 
-      background-color: white;
-      color: #333;
+    &.input-error {
 
       &::placeholder {
         color: $error-color;
-        opacity: 0.6;
       }
     }
   }
@@ -93,12 +88,12 @@ $toggle-size: 40px;
 
     input {
       padding: $input-padding-with-icon;
-      
-      &:focus ~ svg {
+
+      &:focus~svg {
         color: #8b6649;
       }
 
-      &.input-error ~ svg {
+      &.input-error~svg {
         color: $error-color;
       }
     }
@@ -107,7 +102,7 @@ $toggle-size: 40px;
 
 
 .input-error-message {
-  min-height: 20px;  
+  min-height: 20px;
   margin-top: 4px;
   font-size: 14px;
   color: $error-color;
@@ -119,4 +114,3 @@ $toggle-size: 40px;
     opacity: 1;
   }
 }
-

@@ -1,0 +1,30 @@
+.comment-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.comment-input {
+    outline: none;
+    height: 39px;
+    border: none;
+    border-radius: 10px;
+    color: #8B6649;
+    font-size: 15px;
+    font-family: 'Montserrat', sans-serif;
+    max-width: 175px;
+    padding-left: 10px;
+
+    &::placeholder {
+        color: #8B6649;
+        font-size: 15px;
+    }
+}
+
+.custom-table-tbody tr:nth-child(even) .comment-input {
+    background-color: #d8d7d7;
+}
+
+.custom-table-tbody tr:nth-child(odd) .comment-input {
+    background-color: #ffffff;
+}

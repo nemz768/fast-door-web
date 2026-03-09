@@ -39,7 +39,7 @@ const LoginPage = () => {
 
   return (
     <div className="login-page">
-      <div>
+      <div className="logo">
         <Logo />
       </div>
 

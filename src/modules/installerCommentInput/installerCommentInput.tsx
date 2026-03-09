@@ -1,5 +1,7 @@
 
 'use client';
+import './installerCommentInput.scss';
+import '@/modules/customTable/customTable.scss';
 import React from 'react';
 
 interface CommentInputProps {
@@ -9,13 +11,14 @@ interface CommentInputProps {
 
 const CommentInput: React.FC<CommentInputProps> = ({ value, onChange }) => {
     return (
-        <input
-            maxLength={55}
-            type="text"
-            className="comment-input"
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-        />
+            <input
+                maxLength={55}
+                type="text"
+                className="comment-input"
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder='Комментарий...'
+            />
     );
 };
 

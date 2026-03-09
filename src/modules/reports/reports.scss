@@ -124,7 +124,8 @@
 
                 &-input {
                     height: 49px;
-                    border: none !important;
+                    border: 3px solid transparent !important;
+                    box-sizing: border-box;
 
                     @media (max-width: 480px) {
                         height: 42px;
@@ -135,6 +136,8 @@
 
         &-input {
             height: 49px;
+            border: 3px solid transparent;
+            box-sizing: border-box;
 
             @media (max-width: 480px) {
                 height: 42px;
@@ -148,7 +151,7 @@
         }
 
         &-title {
-            color: $default_color;
+            color: #8b6649;
             font-weight: 600;
             margin: 0 0 1.5rem 0;
             font-size: 1.4rem;
@@ -271,7 +274,7 @@
             &-date {
                 font-size: 14px;
                 line-height: 1;
-                color: #555;
+                color: #8b6649;
 
                 @media (max-width: 768px) {
                     font-size: 12px;
@@ -286,7 +289,7 @@
 }
 
 .reports-error {
-    color: red;
+    color: #ff6b6b;
     padding: 1rem;
     text-align: center;
 
@@ -312,22 +315,20 @@
     gap: 5px;
 }
 
+
 .input-error {
-    border: 1px solid red !important;
+    box-shadow: 0 0 0 2px #ff6b6b !important;
     background-color: #fff5f5 !important;
-    color: red !important;
+    color: #ff6b6b !important;
 
     &::placeholder {
-        color: red !important;
-        opacity: 1;
+        color: #ff6b6b !important;
+ 
     }
-}
 
-.select-error {
-    border: 1px solid red !important;
-
-    div {
-        border-color: red !important;
+    &:focus {
+        box-shadow: none !important;
+        outline: none !important; 
     }
 }
 
@@ -345,7 +346,7 @@
         font-weight: 700;
         font-style: Bold;
         font-size: 18px;
-   
+
 
     }
 

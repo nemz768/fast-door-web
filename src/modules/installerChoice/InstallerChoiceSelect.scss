@@ -1,13 +1,31 @@
-
-
-
-
-
-
 select {
     max-width: 190px;
     width: 100%;
+    height: 39px;
+    border: none;
+    border-radius: 10px;
+    padding: 0 10px;
+    color: #8B6649;
+    font-size: 15px;
+    font-family: 'Montserrat', sans-serif;
+
+
     option {
+        max-width: 190px;
+    width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        font-family: 'Montserrat', sans-serif;
 
     }
+}
+
+.custom-table-tbody tr:nth-child(even) select,
+.custom-table-tbody tr:nth-child(even) select option {
+    background-color: #d8d7d7;
+}
+
+.custom-table-tbody tr:nth-child(odd) select,
+.custom-table-tbody tr:nth-child(odd) select option {
+    background-color: #ffffff;
 }

@@ -262,10 +262,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                         <CommentInput
                                             value={selectedComments[item.id] || item.messageMainInstaller || ""}
                                             onChange={(val) =>
-                                                setSelectedComments(prev => ({
-                                                    ...prev,
-                                                    [item.id]: val
-                                                }))
+                                                setSelectedComments(prev => ({ ...prev, [item.id]: val }))
                                             }
                                         />
                                     </td>
@@ -314,7 +311,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                 {users.length > 0 ? neccessaryTables() : (
                     <div className="emptyOrders-block">
                         {error && error.length > 0 ? (
-                            <p style={{color: 'red'}}>Ошибка - {error}</p>
+                            <p style={{ color: 'red' }}>Ошибка - {error}</p>
                         ) : role === 'main' && selectedTable === 'installerTable' ? (
                             <p>Установщиков пока нет</p>
                         ) : (

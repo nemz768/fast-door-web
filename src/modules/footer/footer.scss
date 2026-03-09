@@ -1,66 +1,70 @@
 @use '../../globals.scss' as *;
 
-
 .app-footer {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
+
     width: 100%;
-    padding: 20px;
+    padding: clamp(12px, 2vw, 24px);
+
     background-color: $default_color;
     box-sizing: border-box;
+
     font-weight: 500;
     color: #FFFFFFB2;
-    font-family: 'Montserrat', sans-serif;
-   
-    @media (max-width: 768px) {
-        padding: 15px;
-        font-size: 14px;
-    }
+
+    padding-bottom: calc(clamp(12px, 2vw, 24px) + env(safe-area-inset-bottom));
+
+    opacity: 0;
+    transform: translateY(60px);
+    transition: all 0.35s ease;
+}
+
+.app-footer.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .app-footer-title {
-    margin: 0 0 10px 0;
-    font-size: 20px;
-    color: #ffffff;
-    text-align: center;
+    margin: 0 0 clamp(6px, 1vw, 12px) 0;
 
-    @media (max-width: 480px) {
-        font-size: 14px;
-        margin-bottom: 8px;
-    }
+    font-size: clamp(14px, 1.2vw, 20px);
+    color: #ffffff;
+
+    text-align: center;
 }
 
 .app-footer-block {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: clamp(4px, 0.8vw, 10px);
     align-items: center;
-
-    @media (max-width: 768px) {
-        gap: 6px;
-    }
 }
 
 .app-footer-links {
     display: flex;
-    gap: 15px;
-    font-size: 20px;
+    gap: clamp(8px, 1vw, 20px);
+
+    font-size: clamp(13px, 1.1vw, 18px);
     line-height: 100%;
-  
+
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .app-footer-links a {
     text-decoration: none;
     transition: color 0.3s, opacity 0.3s;
-         color: #FFFFFFB2;
+    color: #FFFFFFB2;
     font-family: 'Montserrat', sans-serif;
-   
+
     &:hover {
         opacity: 0.8;
         color: #FFFFFF;
@@ -68,5 +72,39 @@
 
     &:active {
         opacity: 0.6;
+    }
+}
+
+@media (max-width: 1024px) {
+    .app-footer-links {
+        gap: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .app-footer {
+        padding: 14px 12px;
+    }
+
+    .app-footer-title {
+        font-size: 15px;
+    }
+
+    .app-footer-links {
+        font-size: 14px;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 420px) {
+
+    .app-footer-title {
+        font-size: 13px;
+    }
+
+    .app-footer-links {
+        font-size: 13px;
+        gap: 8px;
     }
 }

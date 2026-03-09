@@ -1,9 +1,11 @@
 import { orderStore } from "@/stores/orderStore";
-import { InputMask } from "@react-input/mask";
+
 import { useRouter } from "next/navigation";
 import Button from "../button/button";
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
+import Input from "../input/input";
+import MaskedInput from "../inputMask/MaskedInput";
 
 
 interface SellerProps {
@@ -73,7 +75,7 @@ export const SellerForm = observer(({ id, type = 'create' }: SellerProps) => {
                     }
 
                     if (result) {
-                       type === 'edit' ?  router.push('../listOrdersSeller') : router.push('./');
+                        type === 'edit' ? router.push('../listOrdersSeller') : router.push('./');
                     } else {
                         alert(`Ошибка: ${orderStore.error}`);
                     }
@@ -86,24 +88,24 @@ export const SellerForm = observer(({ id, type = 'create' }: SellerProps) => {
                 <div className="create-form-block-subblock">
                     <label className="form-label">
                         ФИО:
-                        <input
+                        <Input
+                            name="fullName"
+                            maxLength={50}
                             type="text"
-                            maxLength={25}
-                            placeholder={"Введите ФИО"}
+                            placeholder="Введите ФИО"
                             onChange={(e) => {
                                 const newValue = e.target.value;
                                 setOrderData({ ...orderData, fullName: newValue });
                                 orderStore.setField("fullName", newValue);
                             }}
                             value={orderData.fullName}
+                            error={orderStore.errors.fullName}
                         />
-                        <span className="input-error-text">
-                            {orderStore.errors.fullName || "\u00A0"}
-                        </span>
                     </label>
                     <label className="form-label">
                         Адрес:
-                        <input
+                        <Input
+                            name="address"
                             type="text"
                             maxLength={100}
                             placeholder="Введите адрес"
@@ -113,46 +115,39 @@ export const SellerForm = observer(({ id, type = 'create' }: SellerProps) => {
                                 orderStore.setField("address", newValue);
                             }}
                             value={orderData.address}
+                            error={orderStore.errors.address}
                         />
-                        <span className="input-error-text">
-                            {orderStore.errors.address || "\u00A0"}
-                        </span>
                     </label>
                 </div>
                 <div className="create-form-block-subblock">
                     <label>
                         Номер телефона:
-                        <InputMask
+                        <MaskedInput
                             placeholder="+7 (___) ___-__-__"
-                            mask="+7 (___) ___-__-__"
-                            replacement={{ _: /\d/ }}
                             onChange={(e) => {
                                 const newValue = e.target.value;
                                 setOrderData({ ...orderData, phone: newValue });
                                 orderStore.setField("phone", newValue);
                             }}
                             value={orderData.phone}
+                            error={orderStore.errors.phone}
                         />
-                        <span className="input-error-text">
-                            {orderStore.errors.phone || "\u00A0"}
-                        </span>
                     </label>
                     <label>
                         Комментарий:
-                        <input
+                        <Input
+                            name="messageSeller"
                             type="text"
                             maxLength={150}
                             placeholder="Введите комментарий(необязательно)"
+                            value={orderData.messageSeller}
+                            error={orderStore.errors.messageSeller}
                             onChange={(e) => {
                                 const newValue = e.target.value;
                                 setOrderData({ ...orderData, messageSeller: newValue });
                                 orderStore.setField("messageSeller", newValue);
                             }}
-                            value={orderData.messageSeller}
                         />
-                        <span className="input-error-text">
-                            {orderStore.errors.messageSeller || "\u00A0"}
-                        </span>
                     </label>
                 </div>
             </div>
@@ -160,52 +155,51 @@ export const SellerForm = observer(({ id, type = 'create' }: SellerProps) => {
             <div className="create-form-block-subblock">
                 <label>
                     Дата установки:
-                    <input
+                    <Input
+                        name="dateOrder"
+                        type="date"
+                        value={orderData.dateOrder}
+                        error={orderStore.errors.dateOrder}
                         onChange={(e) => {
                             const newValue = e.target.value;
                             setOrderData({ ...orderData, dateOrder: newValue });
                             orderStore.setField("dateOrder", newValue);
                         }}
-                        className={`input-bottom ${orderStore.errors.dateOrder ? "input-error" : ""}`}
-                        type="date"
-                        value={orderData.dateOrder}
                     />
                 </label>
                 <label>
                     Кол-во входных дверей:
-                    <input
+                    <Input
+                        name="frontDoorQuantity"
                         type="number"
                         placeholder="Введите кол-во"
                         min={0}
+                        value={orderData.frontDoorQuantity}
+                        error={orderStore.errors.frontDoorQuantity}
+                        className="number-input input-bottom"
                         onChange={(e) => {
                             const newValue = e.target.value;
                             setOrderData({ ...orderData, frontDoorQuantity: Number(newValue) });
                             orderStore.setField("frontDoorQuantity", newValue);
                         }}
-                        value={orderData.frontDoorQuantity}
-                        className={`number-input input-bottom ${orderStore.errors.frontDoorQuantity ? "input-error" : ""}`}
                     />
-                    <span className="input-error-text">
-                        {orderStore.errors.frontDoorQuantity || "\u00A0"}
-                    </span>
                 </label>
                 <label>
                     Кол-во межкомнатных дверей:
-                    <input
+                    <Input
+                        name="inDoorQuantity"
                         type="number"
                         placeholder="Введите кол-во"
                         min={0}
+                        value={orderData.inDoorQuantity}
+                        error={orderStore.errors.inDoorQuantity}
+                        className="number-input input-bottom"
                         onChange={(e) => {
                             const newValue = e.target.value;
                             setOrderData({ ...orderData, inDoorQuantity: Number(newValue) });
                             orderStore.setField("inDoorQuantity", newValue);
                         }}
-                        value={orderData.inDoorQuantity}
-                        className={`number-input input-bottom ${orderStore.errors.inDoorQuantity ? "input-error" : ""}`}
                     />
-                    <span className="input-error-text">
-                        {orderStore.errors.inDoorQuantity || "\u00A0"}
-                    </span>
                 </label>
             </div>
             <div className="submit-wrapper">

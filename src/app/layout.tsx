@@ -29,8 +29,10 @@ export default function RootLayout({
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://fast-door.ru" />
 
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <meta name="viewport" content="width=device-width, initial-scale=0.75, maximum-scale=1.0" />
       </head>
-      <body>
+      <body >
         {children}
         <RequestStatus />
       </body>

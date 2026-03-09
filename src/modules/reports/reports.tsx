@@ -15,8 +15,8 @@ interface FormErrors {
 }
 
 export default observer(function Reports() {
-    const {postReportData, getSellersStore, sellers, data } = reportsStore;
-    
+    const { postReportData, getSellersStore, sellers, data } = reportsStore;
+
     const [formData, setFormData] = useState({
         title: '',
         dateFrom: '',
@@ -70,7 +70,7 @@ export default observer(function Reports() {
 
     const onSubmitHandler = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!validate()) {
             return;
         }
@@ -97,7 +97,7 @@ export default observer(function Reports() {
         }
     };
 
-    const handleChange = (field: keyof typeof formData) => 
+    const handleChange = (field: keyof typeof formData) =>
         (e: React.ChangeEvent<HTMLInputElement>) => {
             setFormData(prev => ({ ...prev, [field]: e.target.value }));
             if (errors[field]) {
@@ -133,10 +133,14 @@ export default observer(function Reports() {
                         <CustomSelect
                             options={sellers}
                             value={formData.relatedUsers}
-                            placeholder={isSubmitted && errors.relatedUsers ? errors.relatedUsers : "Выберите необходимые магазины"}
+                            placeholder={
+                                isSubmitted && errors.relatedUsers
+                                    ? errors.relatedUsers
+                                    : "Выберите необходимые магазины"
+                            }
                             onChange={handleUsersChange}
                             isMulti={true}
-                         
+                            error={isSubmitted && !!errors.relatedUsers}
                         />
                     </div>
 

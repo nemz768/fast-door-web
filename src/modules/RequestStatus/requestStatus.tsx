@@ -1,7 +1,6 @@
 'use client';
-
 import { observer } from "mobx-react-lite";
-import { useEffect, useState } from "react";
+import { useEffect, useState, CSSProperties } from "react";
 import { authStore } from "@/stores/authStore";
 import { tableStore } from "@/stores/tableStore";
 import { calendarStore } from "@/stores/calendarStore";
@@ -15,53 +14,49 @@ interface StoreWithStatus {
     success?: string | null;
     name?: string;
 }
-
 interface Notification {
     id: number;
     message: string;
-    status: "success" | "error";
+    status: "success" | "error" | "warning";
     closing?: boolean;
+    customStyle?: CSSProperties;
 }
 
 const stores: StoreWithStatus[] = [authStore, tableStore, calendarStore, installerStore, reportsStore, orderStore];
-
 let nextId = 1;
+const DISPLAY_DURATION = 3000;
+const CLOSING_DURATION = 350;
 
-const DISPLAY_DURATION = 3000; // 3 секунды
-const CLOSING_DURATION = 350;  // slideOutRight
+type AddWarningFn = (message: string, customStyle?: CSSProperties) => void;
+export let warning: AddWarningFn = () => {};
 
 const RequestStatus = observer(() => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
+    const addNotification = (message: string, status: "success" | "error" | "warning", customStyle?: CSSProperties) => {
+        const id = nextId++;
+        setNotifications(prev => [{ id, message, status, customStyle }, ...prev]);
+    };
+    useEffect(() => {
+        warning = (message, customStyle) => addNotification(message, "warning", customStyle);
+        return () => { warning = () => {}; };
+    }, []);
+
     useEffect(() => {
         const interval = setInterval(() => {
             stores.forEach(store => {
-
                 if (store.error) {
                     addNotification(store.error, "error");
-
-                    setTimeout(() => {
-                        store.error = null;
-                    }, 0);
+                    setTimeout(() => { store.error = null; }, 0);
                 }
-
                 if (store.success) {
                     addNotification(store.success, "success");
-
-                    setTimeout(() => {
-                        store.success = null;
-                    }, 0);
+                    setTimeout(() => { store.success = null; }, 0);
                 }
-
             });
         }, 200);
-
         return () => clearInterval(interval);
     }, []);
-    const addNotification = (message: string, status: "success" | "error") => {
-        const id = nextId++;
-        setNotifications(prev => [{ id, message, status }, ...prev]);
-    };
 
     const startClosing = (id: number) => {
         setNotifications(prev =>
@@ -80,6 +75,7 @@ const RequestStatus = observer(() => {
                 <div
                     key={n.id}
                     className={`request-status request-status--${n.status} ${n.closing ? 'closing' : ''}`}
+                    style={n.customStyle}
                 >
                     <span>{n.message}</span>
                     <span className="request-status-close" onClick={() => closeNotification(n.id)}>✕</span>
@@ -89,7 +85,6 @@ const RequestStatus = observer(() => {
                             animationDuration: `${DISPLAY_DURATION}ms`,
                             animationPlayState: n.closing ? "paused" : "running"
                         }}
-
                         onAnimationEnd={() => {
                             if (!n.closing) startClosing(n.id);
                         }}

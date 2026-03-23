@@ -22,7 +22,7 @@ export default function InstallersList() {
             <Header links={links} />
              <main className="installers_main">
                     <Title centered={true} pageTitle={"Список установщиков"} />
-            <div className="table-wrapper">
+            <div className="table-wrapper-installer">
                
                     <CustomTable role={"main"}
                         selectedTable="installerTable"

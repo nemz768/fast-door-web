@@ -9,6 +9,12 @@
     padding: 22px 30px 33px 27px;
     position: relative;
     height: 142px;
+
+
+    @media(max-width: 900px) {
+         z-index: 1000;
+    }
+
 }
 
 .close-btn {

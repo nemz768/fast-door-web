@@ -3,4 +3,14 @@
     row-gap: 20px;
     display: flex;
     flex-direction: column;
+
+    @media (min-width: 481px) and (max-width: 1380px) {
+        padding: 0 0 150px;
+        margin: 47px 0 0;
+    }
+
+    @media (max-width: 480px) {
+        margin: 47px 0 0;
+        padding: 0;
+    }
 }

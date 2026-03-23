@@ -1,16 +1,17 @@
 .mainInstaller_main {
-    margin: 47px 44px 150px 37px;
+    margin: 47px 44px 250px 37px;
     row-gap: 25px;
     display: flex;
     flex-direction: column;
-
+    
     @media (min-width: 481px) and (max-width: 1380px) {
-        padding: 0 0 250px;
-        margin: 0;
+        padding: 0 0 450px;
+        margin: 47px 0 0;
     }
 
     @media (max-width: 480px) {
-        margin: 0 0 200px;
+        margin: 47px 0 0;
+        padding: 0;
     }
 }
 
@@ -41,6 +42,12 @@
         }
     }
 
+    &-blocks {
+        @media(max-width: 480px) {
+           row-gap: 70px;
+           margin-bottom: 150px;
+        }
+    }
 
 }
 

@@ -1,4 +1,4 @@
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable, observable, runInAction } from "mobx";
 
 class TableStore {
     data: any = null;
@@ -7,7 +7,7 @@ class TableStore {
     loading: boolean = false;
     isInitialized: Boolean = false;
     success: string | null = null;
-
+   
     constructor() {
         makeAutoObservable(this);
     }
@@ -134,7 +134,7 @@ class TableStore {
         runInAction(() => {
             this.loading = true;
             this.error = null;
-            this.success = null; 
+            this.success = null;
         });
 
         try {

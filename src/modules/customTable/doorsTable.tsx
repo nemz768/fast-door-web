@@ -21,32 +21,60 @@ const DoorsTable = observer(function DoorsTable({
     typeof initialPage === "number" ? Math.max(0, initialPage - 1) : 0
   );
   const [size, setSize] = useState(initialSize ?? 10);
+  const getTomorrow = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    d.setHours(0, 0, 0, 0);
+    return d;
+  };
+
+  const isFuture = (dateStr: string) => {
+    const tomorrow = getTomorrow();
+    return new Date(dateStr) >= tomorrow;
+  };
+
+  const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
-    const loadData = async () => {
-      if (pagination) {
-        await calendarStore.fetchPaged(page, size, sortBy);
+    const loadFilteredData = async () => {
+      let result: any[] = [];
+      let currentPage = page;
 
-        if (calendarStore.pagedData.length === 0 && page > 0) {
-          const lastPage = Math.max(0, Math.ceil(calendarStore.totalElements / size) - 1);
-          setPage(lastPage);
-        }
-      } else {
-        await calendarStore.fetchAll();
+      while (result.length < size) {
+        await calendarStore.fetchPaged(currentPage, size, sortBy);
+
+        const filtered = calendarStore.pagedData.filter(item =>
+          isFuture(item.date)
+        );
+
+        result = [...result, ...filtered];
+
+        if (currentPage >= calendarStore.totalPages - 1) break;
+
+        currentPage++;
       }
+
+      setData(result.slice(0, size));
     };
 
-    loadData();
+    if (pagination) {
+      loadFilteredData();
+    } else {
+      calendarStore.fetchAll().then(() => {
+        const filtered = calendarStore.allData.filter(item =>
+          isFuture(item.date)
+        );
+        setData(filtered);
+      });
+    }
   }, [page, size, sortBy, pagination]);
-
-  const data = pagination ? calendarStore.pagedData : calendarStore.allData;
 
   return (
     <div className="doorsTable-container">
       <table className="custom-table doorsTable">
         <thead className="custom-table-header">
           <tr className="custom-table-header-box">
-            <th>Дата</th>
+            <th className="custom-table-header-date">Дата</th>
             <th>Кол-во входных дверей</th>
             <th>Кол-во межкомнатных дверей</th>
           </tr>
@@ -63,8 +91,8 @@ const DoorsTable = observer(function DoorsTable({
           {data
             .map((item) => (
               item.available ? (
-                <tr key={item.date}>
-                  <td className="custom-table-tbody-centered">{formatDate(item.date)}</td>
+                <tr className="custom-table-tbody" key={item.date}>
+                  <td className="custom-table-tbody-centered custom-table-header-date">{formatDate(item.date)}</td>
                   <td className="custom-table-tbody-centered">{item.frontDoorQuantity}</td>
                   <td className="custom-table-tbody-centered">{item.inDoorQuantity}</td>
                 </tr>

@@ -16,6 +16,10 @@ import InstallerChoiceSelect from '../installerChoice/installerChoice';
 import { installerStore } from "@/stores/installerStore";
 import CommentInput from "../installerCommentInput/installerCommentInput";
 import Loader from "../loader/loader";
+import telegramIcon from '@/assets/images/tgW.png';
+import "./installerTable.scss";
+import { formatPhone } from "../formatPhone/formatPhone";
+import { warning } from "../RequestStatus/requestStatus";
 
 interface CustomTableProps {
     role: string;
@@ -48,7 +52,6 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
         }
     }
 
-
     const users = tableStore.data ?? [];
 
     if (loading) {
@@ -70,7 +73,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
         const installerFullName = selectedInstallers[item.id];
 
         if (!installerFullName) {
-            alert("Выберите установщика!");
+            warning("Выберите установщика!");
             return;
         }
 
@@ -99,11 +102,12 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
     function neccessaryTables() {
         if (selectedTable === 'installerTable') {
             return (
-                <table className="custom-table">
+                <table className="custom-table installer-table">
                     <thead className="custom-table-header">
                         <tr className="custom-table-header-box">
-                            <th>ФИО</th>
+                            <th className="table-fullName">ФИО</th>
                             <th>Номер телефона</th>
+                            <th>Получение <br /> заказа</th>
                             <th>Действие</th>
                         </tr>
                     </thead>
@@ -111,7 +115,8 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                         {users.map((item: any) => (
                             <tr key={item.id}>
                                 <td>{item.fullName}</td>
-                                <td>{item.phone}</td>
+                                <td>{formatPhone(item.phone)}</td>
+                                <td><img src={telegramIcon.src} alt="Telegram" className="social-img" style={!item.tgId ? { opacity: 0.5 } : { opacity: 1 }} /></td>
                                 <td className="custom-table-tbody-centered">
                                     <TableButton onClick={() => router.push(`./edit/${item.id}`)} src={editW.src} alt="edit" />
                                     <TableButton src={removeW.src} alt="remove" onClick={async () => {
@@ -136,19 +141,19 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
         }
         else if (selectedTable === 'allOrdersTable') {
             return (
-                <table className="custom-table">
+                <table className="custom-table orders-table">
                     <thead className="custom-table-header">
                         <tr className="custom-table-header-box">
                             <th className="table-fullName">ФИО</th>
                             <th className="table-address">Адрес доставки</th>
                             <th>Номер</th>
                             <th>Дата установки</th>
-                            <th className="table-count">Кол-во вх. дверей</th>
-                            <th className="table-count">Кол-во межкомн. дверей</th>
+                            <th className="table-count">Кол-во <br /> входных <br /> дверей</th>
+                            <th className="table-count">Кол-во <br /> межкомн. <br /> дверей</th>
                             <th className="table-comment">Комментарий продавца</th>
-                            <th className="table-comment">Ваш комментарий</th>
-                            <th className="table-installer">Установщик</th>
-                            <th>Филиал</th>
+                            <th className="table-comment-allOrders">Ваш комментарий</th>
+                            <th className="table-installer-allOrders">Установщик</th>
+                            <th className="table-filial-allOrders">Филиал</th>
                             <th className="table-btns">Действия</th>
                         </tr>
                     </thead>
@@ -160,7 +165,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                             return (<tr key={item.id}>
                                 <td className="table-fullName">{item.fullName || "-"}</td>
                                 <td className="table-address">{item.address || "-"}</td>
-                                <td className="custom-table-tbody-centered">{item.phone || "-"}</td>
+                                <td className="custom-table-tbody-centered">{formatPhone(item.phone) || "-"}</td>
                                 <td className="custom-table-tbody-centered">{formatDate(item.dateOrder)}</td>
                                 <td className="custom-table-tbody-centered table-count">{item.frontDoorQuantity || "-"}</td>
                                 <td className="custom-table-tbody-centered table-count">{item.inDoorQuantity || "-"}</td>
@@ -168,7 +173,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                 <td className="table-comment">
                                     {isEditing ? (
                                         <CommentInput
-                                            value={selectedComments[item.id] || item.messageMainInstaller || ""}
+                                            value={selectedComments[item.id] !== undefined ? selectedComments[item.id] : (item.messageMainInstaller || "")}
                                             onChange={(val) =>
                                                 setSelectedComments(prev => ({
                                                     ...prev,
@@ -180,7 +185,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                         item.messageMainInstaller || "-"
                                     )}
                                 </td>
-                                <td className="custom-table-tbody-centered table-installer">
+                                <td className="custom-table-tbody-centered">
                                     {isEditing ? (
                                         <InstallerChoiceSelect
                                             date={item.dateOrder}
@@ -193,7 +198,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                         item.installerName || "-"
                                     )}
                                 </td>
-                                <td>{item.nickname || "-"}</td>
+                                <td className="table-filial-allOrders">{item.nickname || "-"}</td>
                                 <td className="table-btns custom-table-tbody-centered">
                                     {isEditing ? (
                                         <TableButton
@@ -209,7 +214,22 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                         <TableButton
                                             src={editW.src}
                                             alt="edit"
-                                            onClick={() => setEditingRowId(item.id)}
+                                            onClick={() => {
+                                                setEditingRowId(item.id);
+                                                if (item.installerName) {
+                                                    setSelectedInstallers(prev => ({
+                                                        ...prev,
+                                                        [item.id]: item.installerName
+                                                    }));
+                                                }
+
+                                                if (item.messageMainInstaller) {
+                                                    setSelectedComments(prev => ({
+                                                        ...prev,
+                                                        [item.id]: item.messageMainInstaller
+                                                    }));
+                                                }
+                                            }}
                                         />
                                     )}
 
@@ -227,10 +247,11 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                         })}
                     </tbody>
                 </table>
+
             )
         } else {
             return (
-                <table className="custom-table">
+                <table className="custom-table main-table">
                     <thead className="custom-table-header">
                         <tr className="custom-table-header-box">
                             {role === 'main' && <th>Филиал</th>}
@@ -252,7 +273,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                 {role === 'main' && <td className="custom-table-tbody-centered">{item.nickname || '-'}</td>}
                                 {(role === 'administrator' || role === "salespeople") && <td className="table-fullName">{item.fullName || "-"}</td>}
                                 <td className="table-address">{item.address || "-"}</td>
-                                <td className="custom-table-tbody-centered">{item.phone || "-"}</td>
+                                <td className="custom-table-tbody-centered">{formatPhone(item.phone) || "-"}</td>
                                 <td className="custom-table-tbody-centered">{formatDate(item.dateOrder) || "-"}</td>
                                 <td className="custom-table-tbody-centered table-count">{item.frontDoorQuantity || "-"}</td>
                                 <td className="custom-table-tbody-centered table-count">{item.inDoorQuantity || "-"}</td>
@@ -307,8 +328,11 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
 
     return (
         <>
-            <div className="custom-table-wrapper">
-                {users.length > 0 ? neccessaryTables() : (
+            {users.length > 0 ?
+                <div className="table-wrapper">
+                    {neccessaryTables()}
+                </div>
+                : (
                     <div className="emptyOrders-block">
                         {error && error.length > 0 ? (
                             <p style={{ color: 'red' }}>Ошибка - {error}</p>
@@ -319,7 +343,6 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                         )}
                     </div>
                 )}
-            </div>
 
             {pagination && users.length > 0 && (
                 <TablePagination

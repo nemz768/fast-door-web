@@ -7,6 +7,7 @@ import './installerForm.scss';
 import Button from '../button/button';
 import { installerStore } from '@/stores/installerStore';
 import { useRouter } from 'next/navigation';
+import { formatPhone } from '../formatPhone/formatPhone';
 
 interface InstallerFromProps {
     id?: number;
@@ -39,7 +40,7 @@ const InstallerForm = observer(({ flag, id }: InstallerFromProps) => {
                 if (installer) {
                     setFormData({
                         fullName: installer.fullName || '',
-                        phone: installer.phone || ''
+                        phone: formatPhone(installer.phone) || ''
                     });
                 }
             })();
@@ -64,31 +65,32 @@ const InstallerForm = observer(({ flag, id }: InstallerFromProps) => {
         setErrors(prev => ({ ...prev, [field]: undefined }));
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-        if (!validate()) return;
+    if (!validate()) return;
 
-        try {
-            if (flag === 'create') {
-                installerStore.createInstaller({
-                    fullName: formData.fullName,
-                    phone: formData.phone
-                });
+    try{
+       
+        const cleanPhone = formData.phone.replace(/\D/g, '');
 
-
-                router.push('./InstallersList');
-            } else if (flag === 'edit' && id) {
-                installerStore.editInstaller(id, {
-                    fullName: formData.fullName,
-                    phone: formData.phone
-                });
-                router.push('../InstallersList');
-            }
-        } catch (err) {
-            console.error("Ошибка при сохранении:", err);
+        if (flag === 'create') {
+            installerStore.createInstaller({
+                fullName: formData.fullName,
+                phone: cleanPhone
+            });
+            router.push('./InstallersList');
+        } else if (flag === 'edit' && id) {
+            installerStore.editInstaller(id, {
+                fullName: formData.fullName,
+                phone: cleanPhone
+            });
+            router.push('../InstallersList');
         }
-    };
+    } catch (err) {
+        console.error("Ошибка при сохранении:", err);
+    }
+};
 
     return (
         <form className="installer-form" onSubmit={(e) => {

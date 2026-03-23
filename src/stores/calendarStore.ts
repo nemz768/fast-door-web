@@ -66,8 +66,7 @@ class CalendarStore {
       let totalPages = 1;
 
       while (page < totalPages) {
-        const url =
-          `${process.env.NEXT_PUBLIC_API_URL}/orders/allDays?page=${page}&size=100&sort=id`;
+        const url =`${process.env.NEXT_PUBLIC_API_URL}/orders/allDays?page=${page}&size=100&sort=id`;
 
         const response = await fetch(url, {
           headers: {
@@ -127,31 +126,28 @@ class CalendarStore {
       this.loading = true;
       this.error = null;
 
-      for (const item of dates) {
-        const url = `${process.env.NEXT_PUBLIC_API_URL}/doorLimits/closeDate?date=${item.date}`;
-        const payload = {
-          date: item.date,
-          available: false,
-        };
-
-        await this.fetchPatchCalendar(url, payload, "PATCH");
-
-        const idxAll = this.allData.findIndex(d => d.date === item.date);
-        if (idxAll !== -1) {
-          this.allData[idxAll] = {
-            ...this.allData[idxAll],
+      await Promise.all(
+        dates.map(item => {
+          const url = `${process.env.NEXT_PUBLIC_API_URL}/doorLimits/closeDate?date=${item.date}`;
+          const payload = {
+            date: item.date,
             available: false,
           };
-        }
+          return this.fetchPatchCalendar(url, payload, "PATCH");
+        })
+      );
 
-        const idxPaged = this.pagedData.findIndex(d => d.date === item.date);
-        if (idxPaged !== -1) {
-          this.pagedData[idxPaged] = {
-            ...this.pagedData[idxPaged],
-            available: false,
-          };
-        }
-      }
+      this.allData = this.allData.map(d =>
+        dates.some(item => item.date === d.date)
+          ? { ...d, available: false }
+          : d
+      );
+
+      this.pagedData = this.pagedData.map(d =>
+        dates.some(item => item.date === d.date)
+          ? { ...d, available: false }
+          : d
+      );
 
     } catch (err: any) {
       this.error = err.message;

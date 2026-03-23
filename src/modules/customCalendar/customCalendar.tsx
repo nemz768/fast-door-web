@@ -60,7 +60,15 @@ const UniversalCalendar = observer(({
     loadDates();
   }, [fetchData]);
 
-  const calendarData = calendarStore.allData;
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+  // отображаем только даты не наступившие 
+  const calendarData = calendarStore.allData.filter(item => {
+    const itemDate = new Date(item.date);
+    return itemDate >= tomorrow;
+  });
+
   const allowedDates = calendarData.map(d => new Date(d.date));
   const closedDates = calendarData.filter(d => !d.available).map(d => new Date(d.date));
 
@@ -183,7 +191,7 @@ const UniversalCalendar = observer(({
   };
 
   const handleModalSuccess = async () => {
-     setSelectedDates([]); 
+    setSelectedDates([]);
     setIsModalOpen(false);
     setModalDate(null);
   };

@@ -55,6 +55,7 @@ export default function MainInstaller() {
 
                     <DoorsTable
                         pagination={true}
+                        initialSize={8}
                     />
                 </div>
 

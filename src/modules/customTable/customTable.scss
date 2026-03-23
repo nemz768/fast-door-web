@@ -1,5 +1,13 @@
 @use "@/globals.scss" as *;
 
+.table-wrapper {
+    width: 100%;
+    min-width: 100px; 
+    overflow-x: auto;
+  
+    contain: layout;
+}
+
 .custom-table {
     max-width: 100%;
     width: 100%;
@@ -7,7 +15,8 @@
     height: 100%;
     border: 1px solid $dark_border_color;
     border-collapse: collapse;
-
+    table-layout: auto;
+  
     th,
     td {
         border: 1px solid $dark_border_color;
@@ -20,10 +29,11 @@
 
     &-header {
         background-color: $default_color;
-
+        
         &-box {
             color: $default_text-color;
             border: 1px solid $dark_border_color;
+            
         }
 
     }
@@ -34,7 +44,7 @@
             overflow: hidden;
             -webkit-box-orient: vertical;
             word-break: break-word;
-            height: 125px;
+            height: 75px;
         }
 
         tr:nth-child(odd) {
@@ -56,31 +66,49 @@
     }
 
     td {
-        height: 75px;
+        height: 50px;
     }
 }
 
-.table-address {
-    width: 250px;
+.table-col-filial {
+    min-width: 100px;
+}
+
+.table-col-address {
+    min-width: 240px;
+}
+
+.table-col-phone {
+    min-width: 120px;
+}
+
+.table-col-date {
+    min-width: 110px;
+}
+
+.table-col-count {
+    min-width: 100px;
+}
+
+.table-col-comment {
+    min-width: 200px;
+}
+
+.table-col-installer {
+    min-width: 180px;
+}
+
+.table-col-actions {
+    min-width: 100px;
 }
 
 .table-fullName {
-    width: 192px;
+    min-width: 200px;
 }
 
-.table-comment {
-    width: 210px;
-    max-width: 210px;
-    
-}
-
-.table-count {
-    width: 103px;
-}
 
 .table-installer {
-    width: 210px;
-    max-width: 210px;
+    min-width: 250px;
 }
 
 .doorsTable-container {
@@ -105,3 +133,44 @@
 
 
 
+.social-img {
+
+    width: 50px;
+    height: 50px;
+}
+
+.custom-table-header-date {
+    min-width: 107px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// AllOrdersTable 
+
+.table-comment-allOrders {
+      min-width: 200px;
+      width: 200px;
+}
+
+.table-installer-allOrders {
+    min-width: 250px;
+}
+
+.table-filial-allOrders {
+    min-width: 100px;
+}

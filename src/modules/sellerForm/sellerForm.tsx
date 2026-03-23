@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
 import Input from "../input/input";
 import MaskedInput from "../inputMask/MaskedInput";
+import { formatPhone } from "../formatPhone/formatPhone";
 
 
 interface SellerProps {
@@ -38,7 +39,7 @@ export const SellerForm = observer(({ id, type = 'create' }: SellerProps) => {
                         const formattedData = {
                             fullName: item.fullName || "",
                             address: item.address || "",
-                            phone: item.phone || "",
+                            phone: formatPhone(item.phone) || "",
                             messageSeller: item.messageSeller || "",
                             dateOrder: item.dateOrder || "",
                             frontDoorQuantity: item.frontDoorQuantity || 0,
@@ -65,13 +66,24 @@ export const SellerForm = observer(({ id, type = 'create' }: SellerProps) => {
             onSubmit={async (e) => {
                 e.preventDefault();
 
-                if (orderStore.validateForm()) {
-                    let result;
+               orderStore.setField("phone", orderData.phone);
+                orderStore.setField("fullName", orderData.fullName);
+                orderStore.setField("address", orderData.address);
+                orderStore.setField("messageSeller", orderData.messageSeller);
+                orderStore.setField("dateOrder", orderData.dateOrder);
 
+                if (orderStore.validateForm()) {
+                    const cleanPhone = orderData.phone.replace(/\D/g, '');
+                    const dataToSend = { ...orderData, phone: cleanPhone };
+
+                    let result;
                     if (type === 'edit' && id) {
-                        result = await orderStore.editOrderSeller(id, orderData)
+                        result = await orderStore.editOrderSeller(id, dataToSend);
                     } else {
-                        result = await orderStore.postOrderData({ ...orderStore.payload });
+                        result = await orderStore.postOrderData({
+                            ...orderStore.payload,
+                            phone: cleanPhone
+                        });
                     }
 
                     if (result) {
@@ -126,8 +138,8 @@ export const SellerForm = observer(({ id, type = 'create' }: SellerProps) => {
                             placeholder="+7 (___) ___-__-__"
                             onChange={(e) => {
                                 const newValue = e.target.value;
-                                setOrderData({ ...orderData, phone: newValue });
-                                orderStore.setField("phone", newValue);
+                                setOrderData({ ...orderData, phone: newValue }); // с маской
+                                orderStore.setField("phone", newValue);           // с маской для валидации
                             }}
                             value={orderData.phone}
                             error={orderStore.errors.phone}

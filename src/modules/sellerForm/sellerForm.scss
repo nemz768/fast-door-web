@@ -1,0 +1,175 @@
+@use "@/globals.scss" as *;
+
+.create-form {
+    width: 100%;
+    max-width: 1677px;
+    height: 100%;
+    background-color: $default_color;
+    border-radius: 30px;
+    padding: 15px 38px 15px 56px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+
+    &-subtitle {
+        font-weight: 700;
+        font-size: 30px;
+        color: $default_text-color;
+    }
+
+    &-block {
+        max-width: 100%;
+
+        &-subblock {
+            display: flex;
+            column-gap: 87px;
+            margin-bottom: 13px;
+            align-items: flex-start;
+
+            label {
+                display: flex;
+                flex-direction: column;
+                width: 50%;
+                row-gap: 7px;
+                font-weight: 500;
+                font-size: 2.0ch;
+                color: $default_text-color;
+                white-space: nowrap;
+
+                input {
+                    height: 56px;
+                    border-radius: 20px;
+                    outline: none;
+                    padding-left: 2ch;
+                    box-sizing: border-box;
+                    border: 3px solid transparent;
+                    
+                }
+
+                &.lower-block {
+                    font-size: 1.3ch;
+
+                    input {
+                        width: 295px;
+                        height: 48px;
+                        font-size: 1.3ch;
+                        padding-left: 1.5ch;
+                    }
+                }
+
+                .input-bottom {
+                    width: 295px;
+                }
+
+                .input-error {
+                    border: 3px solid #ff6b6b;
+                }
+
+                .input-error-text {
+                    color: #ff6b6b;
+                    font-size: 12px;
+                    margin-top: 3px;
+                    height: 16px;
+                }
+            }
+        }
+    }
+}
+
+.submit-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+@media (max-width: 1024px) {
+    .create-form-block-subblock {
+        column-gap: 40px;
+
+        label.lower-block input {
+            width: 250px;
+            height: 42px;
+            font-size: 1.1ch;
+        }
+    }
+}
+
+// Mobile адаптив
+@media (max-width: 768px) {
+
+    .create-form-wrapper {
+        padding: 0;
+    }
+
+    .create-form {
+        max-width: 100%;
+        padding: 15px;
+        box-sizing: border-box;
+        border-radius: 0;
+    }
+
+    .create-form-subtitle {
+        font-size: 20px;
+        text-align: center;
+    }
+
+    .create-form-block-subblock {
+        flex-direction: column;
+        column-gap: 0;
+        align-items: flex-start;
+        width: 100%;
+
+        label {
+            width: 100%;
+            font-size: 16px;
+            white-space: normal;
+
+            input {
+                width: 100%;
+                max-width: 100%;
+                height: 40px;
+                padding-left: 12px;
+                box-sizing: border-box;
+                font-size: 16px;
+            }
+
+            &.lower-block input,
+            .input-bottom {
+                width: 100%;
+                max-width: 100%;
+            }
+        }
+    }
+
+    .submit-wrapper {
+        width: 100%;
+        justify-content: center;
+
+        .form-btn {
+            width: 100%;
+            max-width: 300px;
+        }
+    }
+}
+
+
+.number-input {
+    width: 100%;
+    height: 56px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    padding: 0 15px;
+    font-size: 16px;
+    outline: none;
+
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}

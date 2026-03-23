@@ -20,10 +20,8 @@ export default function Report() {
         <Header links={links} />
         <main className='report_main'>
           <Title pageTitle={'Панель получения отчетности'}/>
-            <div className="main-content-block">
                 <Reports
                 />
-            </div> 
         </main>
         <Footer />
     </ProtectedRoute>

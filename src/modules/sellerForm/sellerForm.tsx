@@ -7,7 +7,7 @@ import { observer } from "mobx-react-lite";
 import Input from "../input/input";
 import MaskedInput from "../inputMask/MaskedInput";
 import { formatPhone } from "../formatPhone/formatPhone";
-
+import './sellerForm.scss'
 
 interface SellerProps {
     id?: number;
@@ -138,8 +138,8 @@ export const SellerForm = observer(({ id, type = 'create' }: SellerProps) => {
                             placeholder="+7 (___) ___-__-__"
                             onChange={(e) => {
                                 const newValue = e.target.value;
-                                setOrderData({ ...orderData, phone: newValue }); // с маской
-                                orderStore.setField("phone", newValue);           // с маской для валидации
+                                setOrderData({ ...orderData, phone: newValue }); 
+                                orderStore.setField("phone", newValue);           
                             }}
                             value={orderData.phone}
                             error={orderStore.errors.phone}

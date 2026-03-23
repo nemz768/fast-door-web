@@ -10,7 +10,8 @@ import './listOrdersSeller.scss'
 export default function ListOrdersSeller() {
 
     const links = [
-        {id: 1,  name: "Создать заказ", href: "./create"},
+        {id: 1,  name: "На главную", href: "../seller"},
+        {id: 2,  name: "Создать заказ", href: "./create"}
     ]
 
     return (

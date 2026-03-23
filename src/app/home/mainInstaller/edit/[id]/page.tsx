@@ -16,7 +16,7 @@ const InstallersCreate  = observer(() => {
 
         return (
             <ProtectedRoute allowedRoles={["main"]}>
-                    <HeaderCreation route="../InstallersList"/>
+                    <HeaderCreation/>
                 <main className="create-main">
                  <Title pageTitle={"Изменить данные установщика"} />
                  <InstallerForm flag="edit" id={Number(params.id)} />

@@ -5,59 +5,59 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-
     width: 100%;
-    padding: clamp(12px, 2vw, 24px);
-
+    padding: clamp(10px, 2vw, 24px) clamp(12px, 3vw, 40px);
+    padding-bottom: calc(clamp(10px, 2vw, 24px) + env(safe-area-inset-bottom));
     background-color: $default_color;
     box-sizing: border-box;
-
     font-weight: 500;
     color: #FFFFFFB2;
-
-    padding-bottom: calc(clamp(12px, 2vw, 24px) + env(safe-area-inset-bottom));
-
     opacity: 0;
     transform: translateY(60px);
-    margin-top: auto;
     transition: all 0.35s ease;
-}
+    z-index: 50;
 
-.app-footer.show {
-    opacity: 1;
-    transform: translateY(0);
+    &.show {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .app-footer-title {
-    margin: 0 0 clamp(6px, 1vw, 12px) 0;
-
-    font-size: clamp(14px, 1.2vw, 20px);
+    margin: 0 0 clamp(4px, 1vw, 12px) 0;
+    font-size: clamp(11px, 1.2vw, 20px);
     color: #ffffff;
-
     text-align: center;
+    font-weight: 500;
+    white-space: normal;
+    word-break: break-word;
 }
 
 .app-footer-block {
     display: flex;
     flex-direction: column;
-    gap: clamp(4px, 0.8vw, 10px);
+    gap: clamp(2px, 0.8vw, 10px);
     align-items: center;
+    width: 100%;
 }
 
 .app-footer-links {
     display: flex;
-    gap: clamp(8px, 1vw, 20px);
-
-    font-size: clamp(13px, 1.1vw, 18px);
-    line-height: 100%;
-
+    gap: clamp(6px, 1vw, 20px);
+    font-size: clamp(11px, 1.1vw, 18px);
+    line-height: 1.4;
     flex-wrap: wrap;
     justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.app-footer-divider {
+    color: #FFFFFFB2;
 }
 
 .app-footer-links a {
@@ -65,6 +65,7 @@
     transition: color 0.3s, opacity 0.3s;
     color: #FFFFFFB2;
     font-family: 'Montserrat', sans-serif;
+    white-space: nowrap;
 
     &:hover {
         opacity: 0.8;
@@ -73,39 +74,5 @@
 
     &:active {
         opacity: 0.6;
-    }
-}
-
-@media (max-width: 1024px) {
-    .app-footer-links {
-        gap: 12px;
-    }
-}
-
-@media (max-width: 768px) {
-
-    .app-footer {
-        padding: 14px 12px;
-    }
-
-    .app-footer-title {
-        font-size: 15px;
-    }
-
-    .app-footer-links {
-        font-size: 14px;
-        gap: 10px;
-    }
-}
-
-@media (max-width: 420px) {
-
-    .app-footer-title {
-        font-size: 13px;
-    }
-
-    .app-footer-links {
-        font-size: 13px;
-        gap: 8px;
     }
 }

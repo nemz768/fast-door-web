@@ -43,7 +43,7 @@
                     padding-left: 2ch;
                     box-sizing: border-box;
                     border: 3px solid transparent;
-                    
+
                 }
 
                 &.lower-block {
@@ -172,4 +172,40 @@
     -webkit-appearance: textfield;
     -moz-appearance: textfield;
     appearance: textfield;
+}
+
+// ── Маленькие мобильные ───────────────────────────────────
+@media (max-width: 480px) {
+    .create-form {
+        padding: 12px;
+        border-radius: 0;
+
+        &-subtitle {
+            font-size: 17px;
+        }
+    }
+
+    .create-form-block-subblock {
+        label {
+            font-size: 14px;
+
+            input {
+                height: 36px;
+                font-size: 14px;
+                border-radius: 12px;
+            }
+        }
+    }
+
+    .submit-wrapper {
+        .form-btn {
+            max-width: 100%;
+        }
+    }
+
+    .number-input {
+        height: 36px;
+        border-radius: 12px;
+        font-size: 14px;
+    }
 }

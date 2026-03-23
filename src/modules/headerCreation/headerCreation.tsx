@@ -4,11 +4,7 @@ import "./headerCreation.scss";
 import Logo from "../logo/Logo";
 
 
-
-interface HeaderCreationProps {
-  route: string;
-}
-export default function HeaderCreation({route}:HeaderCreationProps) {
+export default function HeaderCreation() {
 
   const router = useRouter();
 
@@ -19,7 +15,7 @@ export default function HeaderCreation({route}:HeaderCreationProps) {
       </div>
 
       <button
-        onClick={() => router.push(route)}
+        onClick={() => router.back()}
         className="header-creation-btn"
       >
         <span>

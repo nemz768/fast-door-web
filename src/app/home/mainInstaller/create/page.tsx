@@ -13,7 +13,7 @@ const InstallersCreate  = observer(() => {
 
         return (
             <ProtectedRoute allowedRoles={["main"]}>
-                 <HeaderCreation route="./"/>
+                 <HeaderCreation/>
                 <main className="create-main">
                 <Title pageTitle={"Добавить установщика"} />
                 <InstallerForm flag="create" />

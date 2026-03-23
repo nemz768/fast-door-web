@@ -11,14 +11,12 @@ import { SellerForm } from "@/modules/sellerForm/sellerForm";
 
 
 const CreateOrderForm = observer(() => {
-
-
     return (
         <ProtectedRoute allowedRoles={['salespeople']}>
-            <HeaderCreation route="./" />
-            <div className="create-form-wrapper">
-                <Title pageTitle={"Создание нового заказа"} />
-                <SellerForm/>
+                <HeaderCreation />
+                <div className="create-form-wrapper">
+                    <Title pageTitle={"Создание нового заказа"} />
+                    <SellerForm />
             </div>
         </ProtectedRoute>
     )

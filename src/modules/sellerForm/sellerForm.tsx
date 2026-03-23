@@ -8,6 +8,7 @@ import Input from "../input/input";
 import MaskedInput from "../inputMask/MaskedInput";
 import { formatPhone } from "../formatPhone/formatPhone";
 import './sellerForm.scss'
+import { warning } from "../RequestStatus/requestStatus";
 
 interface SellerProps {
     id?: number;
@@ -89,7 +90,7 @@ export const SellerForm = observer(({ id, type = 'create' }: SellerProps) => {
                     if (result) {
                         type === 'edit' ? router.push('../listOrdersSeller') : router.push('./');
                     } else {
-                        alert(`Ошибка: ${orderStore.error}`);
+                        warning(`Ошибка: ${orderStore.error}`);
                     }
                 }
             }}

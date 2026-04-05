@@ -61,7 +61,7 @@ export default function Footer() {
                 </span>
                 <span className="app-footer-links">
                     <a target='_blank' href="https://misterdverkin.ru/">Каталог</a>
-                    <a target='_blank' href="#">Twitter</a>а
+                    <a target='_blank' href="#">Twitter</a>
                 </span>
             </div>
         </footer>

@@ -20,6 +20,7 @@
     transform: translateY(60px);
     transition: all 0.35s ease;
     z-index: 50;
+    max-height: 130px;
 
     &.show {
         opacity: 1;

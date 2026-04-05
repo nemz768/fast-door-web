@@ -87,6 +87,7 @@
     .installer-form {
         padding: 40px 30px;
         row-gap: 22px;
+        border-radius: 0;
 
         &__title {
             font-size: 24px;
@@ -113,6 +114,7 @@
     .installer-form {
         padding: 30px 20px;
         border-radius: 20px;
+        border-radius: 0;
 
         &__title {
             font-size: 20px;

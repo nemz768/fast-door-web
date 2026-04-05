@@ -12,4 +12,8 @@
     color: $default_color;
     font-weight: 700;
     margin-bottom: 30px;
+
+    @media (max-width: 720px) {
+        text-align: center;
+    }
 }

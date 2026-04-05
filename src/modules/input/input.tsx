@@ -1,11 +1,12 @@
 'use client';
 
+import { CSSProperties } from 'react';
 import './input.scss';
 
 interface InputProps {
   placeholder?: string;
   name: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   value?: string | number;
   type?: 'text' | 'password' | 'email' | 'date' | 'number';
   error?: string;
@@ -13,6 +14,10 @@ interface InputProps {
   maxLength?: number;
   min?: number;
   max?: number;
+  readOnly?: boolean
+  style?: CSSProperties;
+  onClick?: (event: React.MouseEvent<HTMLInputElement>) => void;
+  onValueChange?: (value: string) => void;
 }
 
 export default function Input({
@@ -25,7 +30,11 @@ export default function Input({
   className,
   maxLength,
   min,
-  max
+  max,
+  readOnly,
+  style,
+  onClick,
+  onValueChange
 }: InputProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,14 +48,18 @@ export default function Input({
       e.target.value = newValue;
     }
 
-    onChange(e);
+    onChange?.(e);
+    onValueChange?.(e.target.value)
   };
 
   return (
     <div className="input-field">
       <input
+        readOnly={readOnly}
+        style={style}
         onChange={handleChange}
         value={value}
+        onClick={onClick}
         name={name}
         placeholder={placeholder}
         type={type}
@@ -55,6 +68,7 @@ export default function Input({
         maxLength={maxLength}
         min={min}
         max={max}
+        
       />
 
       <span

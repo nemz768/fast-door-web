@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import { calendarStore } from "./calendarStore";
 
 type FieldConfig = {
     required?: boolean;
@@ -15,12 +16,12 @@ class OrderStore {
         phone: "",
         messageSeller: "",
         dateOrder: "",
-        frontDoorQuantity: '',
-        inDoorQuantity: '',
+        frontDoorQuantity: "",
+        inDoorQuantity: "",
     };
 
     errors: Record<string, string> = {};
-    loading: boolean = false;
+    loading = false;
     error: string | null = null;
     success: string | null = null;
 
@@ -42,122 +43,80 @@ class OrderStore {
         makeAutoObservable(this);
     }
 
-    setField<K extends keyof typeof this.payload>(
-        field: K,
-        value: string | number
-    ) {
-        if (typeof this.payload[field] === "string" && (field === "frontDoorQuantity" || field === "inDoorQuantity")) {
-            this.payload[field] = String(value) as any;
-        } else {
-            this.payload[field] = value as any;
-        }
-
+    setField<K extends keyof typeof this.payload>(field: K, value: string | number) {
+        this.payload[field] = String(value);
         this.validateField(field);
     }
 
     validateField(field: keyof typeof this.payload) {
-        const config = this.validationConfig[field];
         const value = this.payload[field];
+        const config = this.validationConfig[field];
 
         if (!config) return;
 
-        if (config.required) {
-            if (value === "" || value === null || value === undefined) {
-                this.errors[field] = "Поле обязательно";
-                return;
-            } else {
-                delete this.errors[field];
-            }
+        // Проверка обязательности
+        if (config.required && (!value || value === "")) {
+            this.errors[field] = "Поле обязательно";
+            return;
+        } else {
+            delete this.errors[field];
         }
 
         if (config.type === "string") {
-            const str = String(value);
-
-            if (config.min && str.length < config.min) {
+            if (config.min && value.length < config.min) {
                 this.errors[field] = `Минимум ${config.min} символов`;
                 return;
             }
-
-            if (config.max && str.length > config.max) {
+            if (config.max && value.length > config.max) {
                 this.errors[field] = `Максимум ${config.max} символов`;
                 return;
             }
-
-            if (config.pattern && !config.pattern.test(str)) {
+            if (config.pattern && !config.pattern.test(value)) {
                 this.errors[field] = "Некорректный формат";
                 return;
             }
-
-            delete this.errors[field];
         }
+        if (field === "frontDoorQuantity" || field === "inDoorQuantity") {
+            const front = Number(this.payload.frontDoorQuantity || 0);
+            const inDoor = Number(this.payload.inDoorQuantity || 0);
 
-        if (config.type === "number") {
-            const num = value === "" ? null : Number(value);
-
-            if (num !== null) {
-                if (config.min !== undefined && num < config.min) {
-                    this.errors[field] = `Минимум ${config.min}`;
-                    return;
-                }
-
-                if (config.max !== undefined && num > config.max) {
-                    this.errors[field] = `Максимум ${config.max}`;
-                    return;
-                }
+            if (!this.payload.dateOrder) {
+                this.errors.frontDoorQuantity = "Выберите дату перед вводом количества";
+                this.errors.inDoorQuantity = "Выберите дату перед вводом количества";
+                return;
             }
 
-            delete this.errors[field];
+            const dayData = calendarStore.allData.find(d => d.date === this.payload.dateOrder);
 
-            if (
-                field === "frontDoorQuantity" || field === "inDoorQuantity"
-            ) {
-                const front = this.payload.frontDoorQuantity === "" ? null : Number(this.payload.frontDoorQuantity);
-                const inDoor = this.payload.inDoorQuantity === "" ? null : Number(this.payload.inDoorQuantity);
-
-                if ((front === 0 || front === null) && (inDoor === 0 || inDoor === null)) {
-                    this.errors.frontDoorQuantity = "Нельзя отправить значение 0";
-                    this.errors.inDoorQuantity = "Нельзя отправить значение 0";
-                } else {
+            if (dayData) {
+                if (front > dayData.frontDoorQuantity) {
+                    this.errors.frontDoorQuantity = `Максимум ${dayData.frontDoorQuantity} на выбранную дату`;
+                } else if (this.errors.frontDoorQuantity === `Максимум ${dayData.frontDoorQuantity} на выбранную дату`) {
                     delete this.errors.frontDoorQuantity;
+                }
+
+                if (inDoor > dayData.inDoorQuantity) {
+                    this.errors.inDoorQuantity = `Максимум ${dayData.inDoorQuantity} на выбранную дату`;
+                } else if (this.errors.inDoorQuantity === `Максимум ${dayData.inDoorQuantity} на выбранную дату`) {
                     delete this.errors.inDoorQuantity;
                 }
+            } else {
+                if (this.errors.frontDoorQuantity?.includes("Максимум")) delete this.errors.frontDoorQuantity;
+                if (this.errors.inDoorQuantity?.includes("Максимум")) delete this.errors.inDoorQuantity;
+            }
+            if (front === 0 && inDoor === 0) {
+                this.errors.frontDoorQuantity = "Нельзя отправить значение 0";
+                this.errors.inDoorQuantity = "Нельзя отправить значение 0";
+            } else {
+                if (this.errors.frontDoorQuantity === "Нельзя отправить значение 0") delete this.errors.frontDoorQuantity;
+                if (this.errors.inDoorQuantity === "Нельзя отправить значение 0") delete this.errors.inDoorQuantity;
             }
         }
     }
 
     validateForm() {
-        Object.keys(this.payload).forEach((field) =>
-            this.validateField(field as keyof typeof this.payload)
-        );
-
-        return this.isValid;
-    }
-
-
-    getInputProps<K extends keyof typeof this.payload>(field: K, isRawValue: boolean = false) {
-        const hasError = !!this.errors[field];
-
-        return {
-            value: this.payload[field],
-            className: hasError ? "input-error" : "",
-            onChange: (e: React.ChangeEvent<HTMLInputElement> | number | string) => {
-
-                if (isRawValue) {
-                    const value = typeof this.payload[field] === "number" && typeof e === "string"
-                        ? Number(e)
-                        : e;
-                    this.setField(field, value as any);
-                    return;
-                }
-
-                const event = e as React.ChangeEvent<HTMLInputElement>;
-                const value = typeof this.payload[field] === "number"
-                    ? Number(event.target.value)
-                    : event.target.value;
-
-                this.setField(field, value as any);
-            },
-        };
+        Object.keys(this.payload).forEach(field => this.validateField(field as keyof typeof this.payload));
+        return Object.keys(this.errors).length === 0;
     }
 
     get isValid() {
@@ -188,15 +147,15 @@ class OrderStore {
             })
             const data = await response.json()
 
-             if (!response.ok) {
-                  runInAction(() => {
-                      console.error("Failed to create order:", data);
-                      this.error = `Не удалось создать заказ: ${response.status}`;
-                  });
-  
-                  return;
-              }
-              this.success = 'Заказ успешно создан';
+            if (!response.ok) {
+                runInAction(() => {
+                    console.error("Failed to create order:", data);
+                    this.error = `Не удалось создать заказ: ${response.status}`;
+                });
+
+                return;
+            }
+            this.success = 'Заказ успешно создан';
 
 
             return data;
@@ -227,16 +186,16 @@ class OrderStore {
 
             const response = await fetch(url, options)
             const data = await response.json();
-            
-             if (!response.ok) {
-                  runInAction(() => {
-                      console.error("Failed to get data for edit:", data);
-                      this.error = `Не удалось получить данные для редактирования: ${response.status}`;
-                  });
-  
-                  return;
-              }
-           
+
+            if (!response.ok) {
+                runInAction(() => {
+                    console.error("Failed to get data for edit:", data);
+                    this.error = `Не удалось получить данные для редактирования: ${response.status}`;
+                });
+
+                return;
+            }
+
             return data;
         }
         catch (err: any) {
@@ -262,16 +221,16 @@ class OrderStore {
             const response = await fetch(url, options);
             const text = await response.text();
 
-                if (!response.ok) {
-                  runInAction(() => {
-                      console.error("Failed to update order:", text);
-                      this.error = `Не удалось обновить заказ: ${response.status}`;
-                  });
-                  
-                  return;
-              }
+            if (!response.ok) {
+                runInAction(() => {
+                    console.error("Failed to update order:", text);
+                    this.error = `Не удалось обновить заказ: ${response.status}`;
+                });
 
-              this.success = 'Заказ успешно обновлен';
+                return;
+            }
+
+            this.success = 'Заказ успешно обновлен';
 
             if (!text.trim() || text === "{}") {
                 console.log("Заказ успешно обновлён (пустой ответ)");

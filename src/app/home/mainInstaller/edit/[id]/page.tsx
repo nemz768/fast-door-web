@@ -10,19 +10,19 @@ import { observer } from "mobx-react-lite";
 
 
 
-const InstallersCreate  = observer(() => {
+const InstallersCreate = observer(() => {
 
     const params = useParams();
 
-        return (
-            <ProtectedRoute allowedRoles={["main"]}>
-                    <HeaderCreation/>
-                <main className="create-main">
-                 <Title pageTitle={"Изменить данные установщика"} />
-                 <InstallerForm flag="edit" id={Number(params.id)} />
-                </main>
-            </ProtectedRoute>
-        )
+    return (
+        <ProtectedRoute allowedRoles={["main"]}>
+            <HeaderCreation />
+            <main className="create-main">
+                <Title centered={true} pageTitle={"Изменить данные установщика"} />
+                <InstallerForm flag="edit" id={Number(params.id)} />
+            </main>
+        </ProtectedRoute>
+    )
 })
 
 

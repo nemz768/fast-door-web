@@ -51,7 +51,7 @@ export default function Footer() {
     return (
         <footer className={`app-footer ${visible ? 'show' : ''}`}>
             <h2 className="app-footer-title">
-                Контактная информация: info@doorscompany.com
+                Контактная информация: misterdverkin.shop@gmail.com
             </h2>
             <div className="app-footer-block">
                 <span className="app-footer-links">
@@ -60,8 +60,8 @@ export default function Footer() {
                     <a href="#">Условия использования</a>
                 </span>
                 <span className="app-footer-links">
-                    <a href="#">Каталог</a>
-                    <a href="#">Twitter</a>
+                    <a target='_blank' href="https://misterdverkin.ru/">Каталог</a>
+                    <a target='_blank' href="#">Twitter</a>а
                 </span>
             </div>
         </footer>

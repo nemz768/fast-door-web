@@ -1,4 +1,5 @@
-    export function formatDate(date: string) {
-        const d = new Date(date);
-        return d.toLocaleDateString('ru-RU');
-    }
+export function formatDate(date: string): string {
+    if (!date) return '';
+    const [year, month, day] = date.split('-');
+    return `${day}.${month}.${year}`;
+}

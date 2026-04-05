@@ -1,0 +1,181 @@
+.datepicker-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+
+.datepicker-popup {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    z-index: 1000;
+    background: #f0ebe4;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    padding: 12px;
+    width: 400px;
+
+    @media (max-width: 768px) {
+        width: 100%;
+        min-width: 280px;
+    }
+
+    .react-calendar {
+        background: transparent;
+        border: none;
+        width: 100%;
+        font-family: 'Montserrat', sans-serif;
+
+        &__navigation {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            height: 50px;
+
+            button {
+                background: transparent !important;
+                border: none !important;
+                color: #5a3e28;
+                font-size: 16px !important;
+                cursor: pointer;
+                width: 60px;
+                flex-shrink: 0;
+                line-height: 1 !important;
+                padding: 4px 8px !important;
+                border-radius: 6px;
+                transition: background 0.15s;
+
+                &:hover:not(:disabled) {
+                    background: rgba(100, 160, 200, 0.2) !important;
+                }
+
+                &:disabled {
+                    opacity: 0.3;
+                    cursor: default;
+                }
+            }
+
+            &__label {
+                font-size: 14px !important;
+                font-weight: 700 !important;
+                color: #3a2510 !important;
+                background: transparent !important;
+                border: none !important;
+                pointer-events: none !important;
+                cursor: default !important;
+                flex: 1;
+                text-align: center;
+                white-space: pre-line;
+                line-height: 1.4;
+                overflow: visible;
+                padding: 0 4px;
+
+                span.react-calendar__navigation__label__labelText--from {
+                    font-size: 14px !important;
+                    font-weight: 700 !important;
+                    color: #3a2510 !important;
+                    display: block; 
+                }
+
+                span.react-calendar__navigation__label__divider,
+                span.react-calendar__navigation__label__labelText--to {
+                    display: none !important;
+                }
+            }
+        }
+
+        &__month-view__weekdays {
+            text-align: center;
+            margin-bottom: 4px;
+
+            abbr {
+                text-decoration: none !important;
+                font-size: 12px;
+                font-weight: 500;
+                color: #8b6649;
+            }
+        }
+
+        &__month-view__days__day {
+            background: transparent !important;
+            border: none !important;
+            padding: 2px !important;
+            cursor: pointer;
+
+            abbr {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                margin: 0 auto;
+                font-size: 13px;
+                font-weight: 600;
+                color: #3a2510;
+                text-decoration: none;
+                transition: background 0.15s;
+            }
+
+            &:hover:not([disabled]) abbr {
+                background: rgba(90, 62, 40, 0.12);
+            }
+
+            &--neighboringMonth abbr {
+                color: #c0a898 !important;
+            }
+        }
+
+        &__tile--now {
+            background: transparent !important;
+
+            abbr {
+                background: transparent !important;
+            }
+        }
+
+        &__tile--active,
+        &__tile--hasActive {
+            background: transparent !important;
+
+            abbr {
+                background: #8b6649 !important;
+                color: #fff !important;
+            }
+        }
+
+        // Disabled тайлы
+        &__tile:disabled {
+            background: transparent !important;
+            cursor: not-allowed !important;
+        }
+    }
+}
+
+// Сегодняшняя дата — подчёркивание
+.admin-cal-tile--today {
+    abbr {
+        border-bottom: 2px solid #5a3e28 !important;
+        border-radius: 0 !important;
+        padding-bottom: 1px;
+    }
+}
+
+
+.admin-cal-tile--absent {
+    pointer-events: none;
+    cursor: not-allowed !important;
+
+    abbr {
+        background: #c8b8a8 !important;
+        color: #7a6558 !important;
+    }
+}
+
+.input-error-text {
+    color: #ff6b6b;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}

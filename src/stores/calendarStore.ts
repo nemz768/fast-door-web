@@ -66,7 +66,7 @@ class CalendarStore {
       let totalPages = 1;
 
       while (page < totalPages) {
-        const url =`${process.env.NEXT_PUBLIC_API_URL}/orders/allDays?page=${page}&size=100&sort=id`;
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/orders/allDays?page=${page}&size=100&sort=id`;
 
         const response = await fetch(url, {
           headers: {
@@ -95,6 +95,34 @@ class CalendarStore {
     }
   };
 
+
+  handleGetCalendarDisabledDates = async (page = 0, size = 100, sortBy = 'id') => {
+    const url = `${process.env.NEXT_PUBLIC_API_URL}/doorLimits/allDays?page=${page}&size=${size}&sortBy=${sortBy}`
+    try {
+      this.loading = true;
+      this.error = null;
+
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+
+      const data = await response.json();
+      console.log(data.content);
+
+      this.allData = data.content;
+      return this.allData;
+
+    } catch (err: any) {
+      this.error = err.message;
+      return [];
+    } finally {
+      this.loading = false;
+    }
+  }
 
   fetchPatchCalendar = async (url: string, payload?: any, method: string = "PATCH") => {
     try {

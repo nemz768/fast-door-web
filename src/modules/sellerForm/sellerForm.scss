@@ -43,7 +43,6 @@
                     padding-left: 2ch;
                     box-sizing: border-box;
                     border: 3px solid transparent;
-
                 }
 
                 &.lower-block {
@@ -64,13 +63,6 @@
                 .input-error {
                     border: 3px solid #ff6b6b;
                 }
-
-                .input-error-text {
-                    color: #ff6b6b;
-                    font-size: 12px;
-                    margin-top: 3px;
-                    height: 16px;
-                }
             }
         }
     }
@@ -79,8 +71,117 @@
 .submit-wrapper {
     display: flex;
     justify-content: center;
+    flex-direction: column;
     margin-top: 20px;
 }
+
+.number-input {
+    width: 100%;
+    height: 56px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    padding: 0 15px;
+    font-size: 16px;
+    outline: none;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.date-calendar-popup {
+    position: absolute;
+    z-index: 1000;
+    border-radius: 16px;
+    bottom: 75px;
+    width: 480px;
+    pointer-events: auto;
+
+    .react-calendar {
+        padding: 12px;
+        font-size: 12px;
+        background-color: #f5f1ec;
+
+        &__navigation {
+            height: 32px;
+            margin-bottom: 10px;
+
+            button {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
+            }
+
+            &__label {
+                font-size: 14px;
+            }
+        }
+
+        &__month-view {
+            &__weekdays {
+                font-size: 12px;
+                margin-bottom: 6px;
+            }
+
+            &__days {
+                &__day {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: center;
+                    height: 70px !important; 
+                    min-height: 70px !important;
+                    max-height: 70px !important;
+                    padding: 2px;
+                    box-sizing: border-box;
+
+                    abbr {
+                        font-size: 15px;
+                        font-weight: 600;
+                        line-height: 1.2;
+                    }
+                }
+            }
+        }
+    }
+
+    .calendar-tile-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        font-size: 11px !important;
+        font-weight: 700;
+        text-align: center;
+        width: 100% !important;
+        line-height: 1.2;
+        min-height: 20px;
+    }
+
+    .custom-calendar-actions {
+        display: none;
+    }
+
+    @media (max-width: 768px) {
+        left: 0;
+        right: 0;
+        width: auto;
+
+        .react-calendar__month-view__days__day {
+            height: 80px !important; 
+            min-height: 80px !important;
+            max-height: 80px !important;
+        }
+    }
+}
+
 
 @media (max-width: 1024px) {
     .create-form-block-subblock {
@@ -94,13 +195,7 @@
     }
 }
 
-// Mobile адаптив
 @media (max-width: 768px) {
-
-    .create-form-wrapper {
-        padding: 0;
-    }
-
     .create-form {
         max-width: 100%;
         padding: 15px;
@@ -123,6 +218,9 @@
             width: 100%;
             font-size: 16px;
             white-space: normal;
+            display: flex;
+            flex-direction: column;
+            row-gap: 20px;
 
             input {
                 width: 100%;
@@ -141,10 +239,10 @@
         }
     }
 
-    .submit-wrapper {
-        width: 100%;
-        justify-content: center;
 
+
+
+    @media (max-width: 768px) {
         .form-btn {
             width: 100%;
             max-width: 300px;
@@ -152,29 +250,6 @@
     }
 }
 
-
-.number-input {
-    width: 100%;
-    height: 56px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-    padding: 0 15px;
-    font-size: 16px;
-    outline: none;
-
-
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-
-    -webkit-appearance: textfield;
-    -moz-appearance: textfield;
-    appearance: textfield;
-}
-
-// ── Маленькие мобильные ───────────────────────────────────
 @media (max-width: 480px) {
     .create-form {
         padding: 12px;
@@ -207,5 +282,40 @@
         height: 36px;
         border-radius: 12px;
         font-size: 14px;
+    }
+}
+
+
+label {
+    pointer-events: none;
+}
+
+label input,
+label textarea,
+label select {
+    pointer-events: auto;
+}
+
+.submit-wrapper {
+    display: flex;
+    justify-content: center; 
+    margin: 0 auto;
+
+    .form-btn {
+        width: auto;
+        max-width: 300px; 
+        padding: 0 20px;
+    }
+}
+
+// Mobile адаптив
+@media (max-width: 768px) {
+    .submit-wrapper {
+        justify-content: center;
+    }
+
+    .form-btn {
+        width: 100%; 
+        max-width: 200px!important; 
     }
 }

@@ -1,11 +1,13 @@
 import { reportsStore } from "@/stores/reportsStore";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import './reports.scss'
 import Input from "../input/input";
 import CustomSelect from "../select/customSelect";
 import Button from "../button/button";
 import ReportList from "./reportList";
+import AdminCalendar from "../adminCalendar/adminCalendar";
+import { formatDate } from "../formatDate/formatDate";
 
 interface FormErrors {
     title?: string;
@@ -26,7 +28,8 @@ export default observer(function Reports() {
 
     const [errors, setErrors] = useState<FormErrors>({});
     const [isSubmitted, setIsSubmitted] = useState(false);
-
+    const calendarRef = useRef<HTMLDivElement>(null);
+    const [openCalendar, setOpenCalendar] = useState<'dateFrom' | 'dateTo' | null>(null);
     useEffect(() => {
         getSellersStore();
         reportsStore.getReportData();
@@ -112,6 +115,17 @@ export default observer(function Reports() {
         }
     };
 
+
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (calendarRef.current && !calendarRef.current.contains(e.target as Node)) {
+                setOpenCalendar(null);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
     return (
         <div className="reports-block">
             <ReportList reports={data} />
@@ -145,26 +159,56 @@ export default observer(function Reports() {
                     </div>
 
                     <h3 className="reports-block-box-form-subtitle">Выберите даты для формирования отчета</h3>
-                    <div className="reports-block-box-form-dateInputs">
-                        <div className="date-input-wrapper">
+                    <div ref={calendarRef} className="reports-block-box-form-dateInputs">
+                        <div className="date-input-wrapper" style={{ position: 'relative' }}>
                             <Input
-                                value={formData.dateFrom}
-                                onChange={handleChange("dateFrom")}
+                                readOnly
                                 name="dateFrom"
-                                placeholder={isSubmitted && errors.dateFrom ? errors.dateFrom : "Начало периода"}
-                                type="date"
+                                value={formatDate(formData.dateFrom)}
+                                onValueChange={(date) => {
+                                    setFormData(prev => ({ ...prev, dateFrom: date }));
+                                    if (errors.dateFrom) setErrors(prev => ({ ...prev, dateFrom: undefined }));
+                                }}
+                                onClick={() => setOpenCalendar(prev => prev === 'dateFrom' ? null : 'dateFrom')}
+                                error={isSubmitted ? errors.dateFrom : undefined}
+                                placeholder="Начало периода"
                                 className={isSubmitted && errors.dateFrom ? 'input-error' : 'reports-block-box-form-dateInputs-input'}
                             />
+                            {openCalendar === 'dateFrom' && (
+                                <AdminCalendar
+                                    value={formData.dateFrom}
+                                    onChange={(date) => {
+                                        setFormData(prev => ({ ...prev, dateFrom: date }));
+                                        if (errors.dateFrom) setErrors(prev => ({ ...prev, dateFrom: undefined }));
+                                        setOpenCalendar(null);
+                                    }}
+                                />
+                            )}
                         </div>
-                        <div className="date-input-wrapper">
+                        <div className="date-input-wrapper" style={{ position: 'relative' }}>
                             <Input
-                                value={formData.dateTo}
-                                onChange={handleChange("dateTo")}
+                                readOnly
                                 name="dateTo"
-                                placeholder={isSubmitted && errors.dateTo ? errors.dateTo : "Конец периода"}
-                                type="date"
+                                value={formatDate(formData.dateTo)}
+                                onValueChange={(date) => {
+                                    setFormData(prev => ({ ...prev, dateTo: date }));
+                                    if (errors.dateTo) setErrors(prev => ({ ...prev, dateTo: undefined }));
+                                }}
+                                onClick={() => setOpenCalendar(prev => prev === 'dateTo' ? null : 'dateTo')}
+                                error={isSubmitted ? errors.dateTo : undefined}
+                                placeholder="Конец периода"
                                 className={isSubmitted && errors.dateTo ? 'input-error' : 'reports-block-box-form-dateInputs-input'}
                             />
+                            {openCalendar === 'dateTo' && (
+                                <AdminCalendar
+                                    value={formData.dateTo}
+                                    onChange={(date) => {
+                                        setFormData(prev => ({ ...prev, dateTo: date }));
+                                        if (errors.dateTo) setErrors(prev => ({ ...prev, dateTo: undefined }));
+                                        setOpenCalendar(null);
+                                    }}
+                                />
+                            )}
                         </div>
                     </div>
 

@@ -43,7 +43,7 @@ export default function CustomSelect({
         ? '2px solid #ff6b6b'
         : state.isFocused
           ? '2px solid #e8e7e7'
-          : '2px solid #ccc',
+          : '2px solid transparent',
       boxShadow: error
         ? '0 0 0 2px rgba(255, 107, 107, 0.3)'
         : state.isFocused

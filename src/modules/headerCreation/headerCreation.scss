@@ -19,7 +19,6 @@
     }
 }
 
-// Адаптив
 @media (max-width: 480px) {
 
     .logo-wrapper {
@@ -48,6 +47,7 @@
         align-items: center;         
         row-gap: 20px;               
         text-align: center;
+        padding-top: 20px;
 
     }
 

@@ -19,7 +19,7 @@ const CreateOrderForm = observer(() => {
         <ProtectedRoute allowedRoles={['salespeople']}>
             <HeaderCreation />
             <div className="create-form-wrapper">
-                <Title pageTitle={"Редактирование заказа"} />
+                <Title centered={true} pageTitle={"Редактирование заказа"} />
                 <SellerForm id={Number(params.id)} type="edit"/>
             </div>
         </ProtectedRoute>

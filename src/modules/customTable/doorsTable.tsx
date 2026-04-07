@@ -20,6 +20,8 @@ const DoorsTable = observer(function DoorsTable({
   const [page, setPage] = useState(
     typeof initialPage === "number" ? Math.max(0, initialPage - 1) : 0
   );
+
+  
   const [size, setSize] = useState(initialSize ?? 10);
   const getTomorrow = () => {
     const d = new Date();
@@ -47,7 +49,13 @@ const DoorsTable = observer(function DoorsTable({
           isFuture(item.date)
         );
 
-        result = [...result, ...filtered];
+        const map = new Map();
+
+        [...result, ...filtered].forEach(item => {
+          map.set(item.date, item);
+        });
+
+        result = Array.from(map.values());
 
         if (currentPage >= calendarStore.totalPages - 1) break;
 
@@ -67,7 +75,7 @@ const DoorsTable = observer(function DoorsTable({
         setData(filtered);
       });
     }
-  }, [page, size, sortBy, pagination]);
+  }, [page, size, sortBy, pagination, calendarStore.updateTrigger]);
 
   return (
     <div className="doorsTable-container">

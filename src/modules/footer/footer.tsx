@@ -37,8 +37,7 @@ export default function Footer() {
         };
 
         window.addEventListener('scroll', handleScroll);
-
-        // Начальная проверка — на случай если DOM уже готов
+        
         stabilizeTimer = setTimeout(checkBottom, 150);
 
         return () => {

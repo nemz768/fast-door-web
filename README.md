@@ -1,36 +1,144 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Fast Door Web
 
-## Getting Started
+Фронтенд сайта [fast-door.ru](https://fast-door.ru) — сервис по установке и обслуживанию дверей.  
+Построен на **Next.js 16** с использованием TypeScript, MobX и SCSS.
+---
 
-First, run the development server:
+## Стек технологий
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+| Категория | Технологии |
+|---|---|
+| Фреймворк | Next.js 16 (App Router) |
+| Язык | TypeScript |
+| Стейт-менеджмент | MobX + MobX React Lite |
+| Стилизация | SCSS |
+| Тестирование | Jest, Testing Library |
+| Линтинг | ESLint |
+| Процесс-менеджер | PM2 |
+| Веб-сервер | Nginx |
+
+---
+
+## Структура проекта
+
+```
+fast-door-web/
+├── .github/
+│   └── workflows/          # CI/CD пайплайны GitHub Actions
+├── public/                 # Статические файлы (изображения, иконки)
+├── src/                    # Исходный код приложения
+├── .gitignore
+├── eslint.config.mjs       # Конфигурация ESLint
+├── jest.config.ts          # Конфигурация Jest
+├── jest.setup.ts           # Настройка тестового окружения
+├── next.config.ts          # Конфигурация Next.js
+├── package.json
+├── tsconfig.json           # Конфигурация TypeScript
+└── README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Установка и запуск локально
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Требования
 
-## Learn More
+- Node.js >= 18
+- npm >= 9
 
-To learn more about Next.js, take a look at the following resources:
+### Шаги
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Клонировать репозиторий
+git clone https://github.com/nemz768/fast-door-web.git
+cd fast-door-web
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Установить зависимости
+npm ci
 
-## Deploy on Vercel
+# Запустить dev-сервер (порт 8081)
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Открыть в браузере: [http://localhost:8081](http://localhost:8081)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Скрипты
+
+| Команда | Описание |
+|---|---|
+| `npm run dev` | Запуск dev-сервера на порту 8081 (предварительно прогоняет тесты) |
+| `npm run build` | Сборка production-билда |
+| `npm run start` | Запуск production-сервера |
+| `npm run lint` | Проверка кода линтером |
+| `npm test` | Запуск тестов |
+| `npm run test:watch` | Запуск тестов в режиме наблюдения |
+| `npm run test:coverage` | Запуск тестов с отчётом покрытия |
+
+---
+
+## Зависимости
+
+### Production
+
+| Пакет | Описание |
+|---|---|
+| `next` | Фреймворк React с SSR/SSG |
+| `react` / `react-dom` | React 19 |
+| `mobx` / `mobx-react-lite` | Стейт-менеджмент |
+| `sass` | SCSS поддержка |
+| `@react-input/mask` | Маска ввода для форм |
+| `react-select` | Кастомный select компонент |
+| `react-calendar` | Компонент календаря |
+| `react-loader-spinner` | Спиннеры загрузки |
+
+### Development
+
+| Пакет | Описание |
+|---|---|
+| `typescript` | Типизация |
+| `jest` / `ts-jest` | Тестирование |
+| `@testing-library/react` | Тестирование React компонентов |
+| `eslint` | Линтер |
+
+---
+
+## CI/CD
+
+Проект использует **GitHub Actions** с разделением по веткам.
+
+### Ветки
+
+| Ветка | Действие |
+|---|---|
+| `dev` | Запуск тестов при каждом push |
+| `main` | Деплой на сервер при каждом push |
+
+### Рабочий процесс
+
+```
+dev ──(push)──► тесты (Jest)
+  │
+  └──(merge в main)──► деплой на сервер
+```
+
+### Процесс деплоя на сервере
+
+1. Подключение к серверу по SSH
+2. `git pull origin main`
+4. `npm ci` — установка зависимостей
+5. `npm run build` — сборка Next.js
+6. `pm2 restart fast-door-web` — перезапуск процесса
+7. `nginx -t && systemctl reload nginx` — перезагрузка Nginx
+
+---
+
+## Продакшн
+
+Сайт доступен по адресу: [https://fast-door.ru](https://fast-door.ru)
+
+Инфраструктура:
+- **Nginx** — проксирование запросов
+- **PM2** — управление Node.js процессом
+- **Ubuntu/Debian** — операционная система сервера

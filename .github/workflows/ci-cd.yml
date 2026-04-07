@@ -1,14 +1,34 @@
-name: Deploy FastDoor
+name: Deploy Fast-Door
 
 on:
   push:
     branches:
       - main
+      - dev
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
   deploy:
     runs-on: ubuntu-latest
-
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -22,59 +42,31 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             set -e
-
             echo "Начинаем деплой..."
             cd ~/fast-door-web || exit 1
-
             echo "FRONTEND: FastDoor Web"
-
-            # Сохраняем текущий .env
             if [ -f .env.production ]; then
               cp .env.production .env.backup
               echo ".env.production сохранён в .env.backup"
             fi
-
-            # Обновляем код
             git pull origin main
-
-            # Восстанавливаем .env если пропал
             if [ ! -f .env.production ] && [ -f .env.backup ]; then
               cp .env.backup .env.production
               echo ".env.production восстановлен из бэкапа"
             fi
-
-            # Устанавливаем зависимости
-            npm install
-
-            # Собираем Next.js
+            npm ci
             npm run build
-
-            # Перезапуск PM2
             pm2 restart fast-door-web
             echo "Frontend деплой завершён"
-
             echo "NGINX"
             sudo nginx -t && sudo systemctl reload nginx
             echo "Nginx перезапущен"
-
             echo "Очистка dev-файлов и dev-зависимостей"
-
-            # Удаляем временный бэкап env
             rm -f ~/fast-door-web/.env.backup
-
-            # Чистим npm dev-зависимости
             npm prune --production
-
-            # Удаляем исходники и dev-файлы
             rm -rf ~/fast-door-web/pages ~/fast-door-web/components ~/fast-door-web/styles ~/fast-door-web/tests ~/fast-door-web/scripts ~/fast-door-web/.vscode ~/fast-door-web/.eslintrc.js ~/fast-door-web/.prettierrc
-
-            # Чистим кэш npm
             npm cache clean --force 2>/dev/null || true
-
             echo "Очистка завершена"
-
-            echo "Итоговый статус"
             pm2 status
-
             echo "DEPLOY SUCCESSFUL"
             echo "Сайт: https://fast-door.ru"

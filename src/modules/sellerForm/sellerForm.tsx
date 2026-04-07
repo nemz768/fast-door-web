@@ -33,8 +33,6 @@ export const SellerForm = observer(({ id, type = 'create' }: SellerProps) => {
         inDoorQuantity: 0,
     });
 
-
-
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             const target = e.target as HTMLElement;

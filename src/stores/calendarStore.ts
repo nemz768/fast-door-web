@@ -18,10 +18,15 @@ class CalendarStore {
   totalPages: number = 0;
   totalElements: number = 0;
   selectedDates: any;
+  updateTrigger = 0;
 
   constructor() {
     makeAutoObservable(this);
   }
+
+  triggerUpdate = () => {
+    this.updateTrigger++;
+  };
 
   fetchPaged = async (page = 0, size = 10, sortBy = "id") => {
     try {
@@ -176,7 +181,7 @@ class CalendarStore {
           ? { ...d, available: false }
           : d
       );
-
+      this.triggerUpdate();
     } catch (err: any) {
       this.error = err.message;
     } finally {
@@ -211,6 +216,7 @@ class CalendarStore {
 
         updateItem(this.allData);
         updateItem(this.pagedData);
+        this.triggerUpdate();
       }
     } catch (err: any) {
       this.error = err.message;
@@ -259,7 +265,7 @@ class CalendarStore {
           };
         }
       }
-
+      this.triggerUpdate();
     } catch (err: any) {
       this.error = err.message;
     }

@@ -9,7 +9,7 @@ type FieldConfig = {
     type?: "string" | "number";
 };
 
-class OrderStore {
+export class OrderStore {
     payload = {
         fullName: "",
         address: "",
@@ -54,7 +54,6 @@ class OrderStore {
 
         if (!config) return;
 
-        // Проверка обязательности
         if (config.required && (!value || value === "")) {
             this.errors[field] = "Поле обязательно";
             return;

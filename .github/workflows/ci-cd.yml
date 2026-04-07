@@ -49,6 +49,7 @@ jobs:
               cp .env.production .env.backup
               echo ".env.production сохранён в .env.backup"
             fi
+            git checkout -- package-lock.json
             git pull origin main
             if [ ! -f .env.production ] && [ -f .env.backup ]; then
               cp .env.backup .env.production

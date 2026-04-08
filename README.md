@@ -2,6 +2,7 @@
 
 Фронтенд сайта [fast-door.ru](https://fast-door.ru) — сервис по установке и обслуживанию дверей.  
 Построен на **Next.js 16** с использованием TypeScript, MobX и SCSS.
+
 ---
 
 ## Стек технологий
@@ -61,6 +62,48 @@ npm run dev
 ```
 
 Открыть в браузере: [http://localhost:8081](http://localhost:8081)
+
+---
+
+## Запуск через Docker
+
+### Требования
+
+- Docker Desktop
+
+### Сборка и запуск
+
+```bash
+# Создать сеть
+docker network create fast-door-network
+
+# Собрать образ
+docker build -t fast-door-front .
+
+# Запустить контейнер
+docker run -d --name frontend --network fast-door-network -p 8081:3000 fast-door-front
+```
+
+Открыть в браузере: [http://localhost:8081](http://localhost:8081)
+
+### Запуск вместе с бэкендом
+
+```bash
+# Запустить бэкенд (образ должен быть собран заранее)
+docker run -d --name backend --network fast-door-network -p 8080:8080 javaapp
+
+# Запустить фронтенд
+docker run -d --name frontend --network fast-door-network -p 8081:3000 fast-door-front
+```
+
+Контейнеры находятся в одной сети и видят друг друга по имени — фронт обращается к бэку как `http://backend:8080`.
+
+### Структура Dockerfile
+
+Образ собирается в два этапа:
+
+- **builder** — устанавливает зависимости и собирает Next.js билд
+- **runner** — минимальный образ только с файлами необходимыми для запуска
 
 ---
 
@@ -141,4 +184,4 @@ dev ──(push)──► тесты (Jest)
 Инфраструктура:
 - **Nginx** — проксирование запросов
 - **PM2** — управление Node.js процессом
-- **Ubuntu/Debian** — операционная система сервера
+- **Ubuntu** — операционная система сервера

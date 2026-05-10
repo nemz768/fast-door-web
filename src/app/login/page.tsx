@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { observer } from 'mobx-react-lite';
+import { runInAction } from "mobx";
 import { authStore } from '../../stores/authStore';
 import Input from "@/modules/input/input";
 import Button from "@/modules/button/button";
@@ -54,8 +55,10 @@ const LoginPage = () => {
 
             <Input
               onChange={(event) => {
-                authStore.error = null;
-                authStore.validationErrors.username = "";
+                runInAction(() => {
+                  authStore.error = null;
+                  authStore.validationErrors.username = "";
+                });
                 setGetUserData({ ...getUserData, [event.target.name]: event.target.value })
               }
               }
@@ -73,8 +76,10 @@ const LoginPage = () => {
             </svg>
             <Input
               onChange={(event) => {
-                authStore.error = null;
-                authStore.validationErrors.password = "";
+                runInAction(() => {
+                  authStore.error = null;
+                  authStore.validationErrors.password = "";
+                });
                 setGetUserData({ ...getUserData, [event.target.name]: event.target.value });
               }}
               name="password"
@@ -119,7 +124,7 @@ const LoginPage = () => {
             />
             Запомнить меня
           </label>
-          <a href="#" onClick={() => router.push('/reg')}>Забыли пароль?</a>
+          <a href="#" onClick={() => router.push('/reg')}>Регистрация</a>
         </div>
         <Button text={authStore.isLoading ? 'Вход...' : 'Войти'} onClick={handleSubmit} disabled={authStore.isLoading} type="submit" />
       </form>

@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 
 export interface CalendarDateItem {
   [x: string]: any;
@@ -30,8 +30,10 @@ class CalendarStore {
 
   fetchPaged = async (page = 0, size = 10, sortBy = "id") => {
     try {
-      this.loading = true;
-      this.error = null;
+      runInAction(() => {
+        this.loading = true;
+        this.error = null;
+      });
 
       const url = `${process.env.NEXT_PUBLIC_API_URL}/orders/allDays?page=${page}&size=${size}&sort=${sortBy}`;
 
@@ -44,27 +46,35 @@ class CalendarStore {
 
       const result = await response.json();
 
-      this.pagedData = result.content.map((item: any) => ({
-        ...item,
-        available: item.available,
-      }));
+      runInAction(() => {
+        this.pagedData = result.content.map((item: any) => ({
+          ...item,
+          available: item.available,
+        }));
 
-      this.totalPages = result.totalPages;
-      this.totalElements = result.totalElements;
+        this.totalPages = result.totalPages;
+        this.totalElements = result.totalElements;
+      });
 
       return this.pagedData;
     } catch (err: any) {
-      this.error = err.message;
+      runInAction(() => {
+        this.error = err.message;
+      });
       return [];
     } finally {
-      this.loading = false;
+      runInAction(() => {
+        this.loading = false;
+      });
     }
   };
 
   fetchAll = async () => {
     try {
-      this.loading = true;
-      this.error = null;
+      runInAction(() => {
+        this.loading = true;
+        this.error = null;
+      });
 
       let allData: CalendarDateItem[] = [];
       let page = 0;
@@ -89,14 +99,20 @@ class CalendarStore {
         page++;
       }
 
-      this.allData = allData;
+      runInAction(() => {
+        this.allData = allData;
+      });
 
       return allData;
     } catch (err: any) {
-      this.error = err.message;
+      runInAction(() => {
+        this.error = err.message;
+      });
       return [];
     } finally {
-      this.loading = false;
+      runInAction(() => {
+        this.loading = false;
+      });
     }
   };
 
@@ -104,9 +120,10 @@ class CalendarStore {
   handleGetCalendarDisabledDates = async (page = 0, size = 100, sortBy = 'id') => {
     const url = `${process.env.NEXT_PUBLIC_API_URL}/doorLimits/allDays?page=${page}&size=${size}&sortBy=${sortBy}`
     try {
-      this.loading = true;
-      this.error = null;
-
+      runInAction(() => {
+        this.loading = true;
+        this.error = null;
+      });
 
       const response = await fetch(url, {
         method: "GET",
@@ -118,21 +135,30 @@ class CalendarStore {
       const data = await response.json();
       console.log(data.content);
 
-      this.allData = data.content;
+      runInAction(() => {
+        this.allData = data.content;
+      });
+
       return this.allData;
 
     } catch (err: any) {
-      this.error = err.message;
+      runInAction(() => {
+        this.error = err.message;
+      });
       return [];
     } finally {
-      this.loading = false;
+      runInAction(() => {
+        this.loading = false;
+      });
     }
   }
 
   fetchPatchCalendar = async (url: string, payload?: any, method: string = "PATCH") => {
     try {
-      this.error = null;
-      this.loading = true;
+      runInAction(() => {
+        this.error = null;
+        this.loading = true;
+      });
 
       const response = await fetch(url, {
         method,
@@ -147,17 +173,23 @@ class CalendarStore {
       console.log("RESULT:", data);
       return data;
     } catch (error: any) {
-      this.error = error.message;
-      console.error(error);
+      runInAction(() => {
+        this.error = error.message;
+        console.error(error);
+      });
     } finally {
-      this.loading = false;
+      runInAction(() => {
+        this.loading = false;
+      });
     }
   };
 
   closeCalendarDates = async (dates: { date: string }[]) => {
     try {
-      this.loading = true;
-      this.error = null;
+      runInAction(() => {
+        this.loading = true;
+        this.error = null;
+      });
 
       await Promise.all(
         dates.map(item => {
@@ -170,30 +202,38 @@ class CalendarStore {
         })
       );
 
-      this.allData = this.allData.map(d =>
-        dates.some(item => item.date === d.date)
-          ? { ...d, available: false }
-          : d
-      );
+      runInAction(() => {
+        this.allData = this.allData.map(d =>
+          dates.some(item => item.date === d.date)
+            ? { ...d, available: false }
+            : d
+        );
 
-      this.pagedData = this.pagedData.map(d =>
-        dates.some(item => item.date === d.date)
-          ? { ...d, available: false }
-          : d
-      );
-      this.triggerUpdate();
+        this.pagedData = this.pagedData.map(d =>
+          dates.some(item => item.date === d.date)
+            ? { ...d, available: false }
+            : d
+        );
+        this.triggerUpdate();
+      });
     } catch (err: any) {
-      this.error = err.message;
+      runInAction(() => {
+        this.error = err.message;
+      });
     } finally {
-      this.loading = false;
+      runInAction(() => {
+        this.loading = false;
+      });
     }
   };
 
 
   openCalendarDates = async (dates: { date: string }[]) => {
     try {
-      this.loading = true;
-      this.error = null;
+      runInAction(() => {
+        this.loading = true;
+        this.error = null;
+      });
 
       for (const item of dates) {
         const url = `${process.env.NEXT_PUBLIC_API_URL}/doorLimits/openDate?date=${item.date}`;
@@ -204,24 +244,30 @@ class CalendarStore {
 
         await this.fetchPatchCalendar(url, payload, "PATCH");
 
-        const updateItem = (arr: CalendarDateItem[]) => {
-          const idx = arr.findIndex(d => d.date === item.date);
-          if (idx !== -1) {
-            arr[idx] = {
-              ...arr[idx],
-              available: true,
-            };
-          }
-        };
+        runInAction(() => {
+          const updateItem = (arr: CalendarDateItem[]) => {
+            const idx = arr.findIndex(d => d.date === item.date);
+            if (idx !== -1) {
+              arr[idx] = {
+                ...arr[idx],
+                available: true,
+              };
+            }
+          };
 
-        updateItem(this.allData);
-        updateItem(this.pagedData);
-        this.triggerUpdate();
+          updateItem(this.allData);
+          updateItem(this.pagedData);
+          this.triggerUpdate();
+        });
       }
     } catch (err: any) {
-      this.error = err.message;
+      runInAction(() => {
+        this.error = err.message;
+      });
     } finally {
-      this.loading = false;
+      runInAction(() => {
+        this.loading = false;
+      });
     }
   };
 
@@ -240,34 +286,41 @@ class CalendarStore {
 
         await this.fetchPatchCalendar(url, item);
 
-        const idxAll = this.allData.findIndex(
-          d => d.date === item.date
-        );
+        runInAction(() => {
+          const idxAll = this.allData.findIndex(
+            d => d.date === item.date
+          );
 
-        if (idxAll !== -1) {
-          this.allData[idxAll] = {
-            ...this.allData[idxAll],
-            frontDoorQuantity: item.frontDoorQuantity,
-            inDoorQuantity: item.inDoorQuantity,
-            available: item.available
-          };
-        }
-        const idxPaged = this.pagedData.findIndex(
-          d => d.date === item.date
-        );
+          if (idxAll !== -1) {
+            this.allData[idxAll] = {
+              ...this.allData[idxAll],
+              frontDoorQuantity: item.frontDoorQuantity,
+              inDoorQuantity: item.inDoorQuantity,
+              available: item.available
+            };
+          }
+          const idxPaged = this.pagedData.findIndex(
+            d => d.date === item.date
+          );
 
-        if (idxPaged !== -1) {
-          this.pagedData[idxPaged] = {
-            ...this.pagedData[idxPaged],
-            frontDoorQuantity: item.frontDoorQuantity,
-            inDoorQuantity: item.inDoorQuantity,
-            available: item.available
-          };
-        }
+          if (idxPaged !== -1) {
+            this.pagedData[idxPaged] = {
+              ...this.pagedData[idxPaged],
+              frontDoorQuantity: item.frontDoorQuantity,
+              inDoorQuantity: item.inDoorQuantity,
+              available: item.available
+            };
+          }
+        });
       }
-      this.triggerUpdate();
+
+      runInAction(() => {
+        this.triggerUpdate();
+      });
     } catch (err: any) {
-      this.error = err.message;
+      runInAction(() => {
+        this.error = err.message;
+      });
     }
   };
 

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Button from "../button/button";
 import { useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
+import { runInAction } from "mobx";
 import Input from "../input/input";
 import MaskedInput from "../inputMask/MaskedInput";
 import { formatPhone } from "../formatPhone/formatPhone";
@@ -56,7 +57,10 @@ export const SellerForm = observer(({ id, type = 'create' }: SellerProps) => {
         if (type === "edit" && id) {
             const fetchData = async () => {
                 try {
-                    orderStore.errors = {};
+                    runInAction(() => {
+                        orderStore.errors = {};
+                    });
+
                     const response = await orderStore.getOrderSeller(id, "salespeople");
                     const item = response?.orderAttribute;
 

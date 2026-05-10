@@ -7,16 +7,18 @@ class TableStore {
     loading: boolean = false;
     isInitialized: Boolean = false;
     success: string | null = null;
-   
+
     constructor() {
         makeAutoObservable(this);
     }
 
     fetchData = async (url: string) => {
-        this.error = null;
-        this.totalPages = 0;
-        this.loading = true;
-        this.isInitialized = false;
+        runInAction(() => {
+            this.error = null;
+            this.totalPages = 0;
+            this.loading = true;
+            this.isInitialized = false;
+        });
 
         try {
             const response = await fetch(url, {
@@ -30,7 +32,10 @@ class TableStore {
             const data = await response.json();
             console.log("Fetched data:", data);
 
-            this.totalPages = data.totalPages;
+            runInAction(() => {
+                this.totalPages = data.totalPages;
+            });
+
             if (!response.ok) {
                 runInAction(() => {
                     console.error("Failed to get table data:", data);
@@ -41,12 +46,16 @@ class TableStore {
             return data;
         }
         catch (error: any) {
-            this.error = error.message;
+            runInAction(() => {
+                this.error = error.message;
+            });
             console.error("Fetch data error:", error);
         }
         finally {
-            this.loading = false;
-            this.isInitialized = true;
+            runInAction(() => {
+                this.loading = false;
+                this.isInitialized = true;
+            });
 
         }
 
@@ -58,11 +67,11 @@ class TableStore {
         if (roleTable === "main") {
             switch (selectedTable) {
                 case "installerTable":
-                    return Array.isArray(data.installers) ? data.installers : [];
+                    return Array.isArray(data) ? data : (Array.isArray(data.installers) ? data.installers : []);
 
                 case "allOrdersTable":
                 case "mainInstallerTable":
-                    return Array.isArray(data.orders) ? data.orders : [];
+                    return Array.isArray(data) ? data : (Array.isArray(data.orders) ? data.orders : []);
 
                 case "doorsTable":
                     return Array.isArray(data.doors) ? data.doors : [];
@@ -115,7 +124,9 @@ class TableStore {
 
         const parsed = this.parseResponse(rawData, roleTable, selectedTable);
 
-        this.data = parsed;
+        runInAction(() => {
+            this.data = parsed;
+        });
 
         return parsed;
     };

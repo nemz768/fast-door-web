@@ -14,7 +14,8 @@ interface InputProps {
   maxLength?: number;
   min?: number;
   max?: number;
-  readOnly?: boolean
+  readOnly?: boolean;
+  disabled?: boolean;
   style?: CSSProperties;
   onClick?: (event: React.MouseEvent<HTMLInputElement>) => void;
   onValueChange?: (value: string) => void;
@@ -32,6 +33,7 @@ export default function Input({
   min,
   max,
   readOnly,
+  disabled,
   style,
   onClick,
   onValueChange
@@ -56,6 +58,7 @@ export default function Input({
     <div className="input-field">
       <input
         readOnly={readOnly}
+        disabled={disabled}
         style={style}
         onChange={handleChange}
         value={value}
@@ -68,7 +71,6 @@ export default function Input({
         maxLength={maxLength}
         min={min}
         max={max}
-        
       />
 
       <span

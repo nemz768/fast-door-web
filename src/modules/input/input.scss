@@ -20,6 +20,7 @@ $toggle-size: 40px;
   flex-direction: column;
   width: 100%;
   border: 3px 1px transparent;
+  position: relative;
 
   .input-error-message {
     color: $error-color;
@@ -52,12 +53,22 @@ $toggle-size: 40px;
       background-color: white;
     }
 
+    &.verified {
+      border: 3px solid #4CAF50;
+      background-color: #f1faf1;
+    }
 
     &.input-error {
 
       &::placeholder {
         color: $error-color;
       }
+    }
+
+    &:disabled {
+      background-color: #d0d0d0;
+      color: #6c6c6c;
+      cursor: not-allowed;
     }
   }
 }

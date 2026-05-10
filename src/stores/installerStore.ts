@@ -15,7 +15,10 @@ class InstallerStore {
 
     getInstallers = async () => {
         if (this.installers.length > 0) return;
-        this.loading = true;
+
+        runInAction(() => {
+            this.loading = true;
+        });
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listInstallers`, {
@@ -31,11 +34,8 @@ class InstallerStore {
             }
 
             runInAction(() => {
-                this.installers = data.installers || [];
+                this.installers = Array.isArray(data) ? data : [];
             });
-
-
-
 
         } catch (error) {
             runInAction(() => {
@@ -43,15 +43,20 @@ class InstallerStore {
                 this.error = "Не удалось получить список установщиков";
             });
         } finally {
-            this.loading = false;
+            runInAction(() => {
+                this.loading = false;
+            });
         }
     };
 
     getInstallersWorkloadByDate = async (date: string) => {
         if (!date) return;
 
-        this.loading = true;
-        runInAction(() => { this.error = null; this.success = null; });
+        runInAction(() => {
+            this.loading = true;
+            this.error = null;
+            this.success = null;
+        });
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listInstallers/workload?date=${date}`, {
@@ -86,12 +91,17 @@ class InstallerStore {
                 this.error = "Не удалось получить загруженность установщиков (сетевая ошибка)";
             });
         } finally {
-            runInAction(() => { this.loading = false; });
+            runInAction(() => {
+                this.loading = false;
+            });
         }
     };
 
     deleteInstaller = async (id: number) => {
-        this.loading = true;
+        runInAction(() => {
+            this.loading = true;
+        });
+
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listInstallers/delete/${id}`, {
                 credentials: "include",
@@ -104,6 +114,7 @@ class InstallerStore {
                     (installer: any) => installer.id !== id
                 );
             });
+
             if (!response.ok) {
                 runInAction(() => {
                     console.error("Failed to delete installer:", text);
@@ -111,7 +122,10 @@ class InstallerStore {
                 });
                 return;
             }
-            this.success = 'Установщик успешно удален';
+
+            runInAction(() => {
+                this.success = 'Установщик успешно удален';
+            });
 
         } catch (error) {
             runInAction(() => {
@@ -120,12 +134,17 @@ class InstallerStore {
             });
         }
         finally {
-            this.loading = false;
+            runInAction(() => {
+                this.loading = false;
+            });
         }
     }
 
     getInstallerById = async (id: number) => {
-        this.loading = true;
+        runInAction(() => {
+            this.loading = true;
+        });
+
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/installer/${id}`, {
                 credentials: "include",
@@ -150,13 +169,18 @@ class InstallerStore {
                 this.error = "Не удалось получить установщика";
             });
         } finally {
-            this.loading = false;
+            runInAction(() => {
+                this.loading = false;
+            });
         }
     }
 
 
     createInstaller = async (data: { fullName: string; phone: string }) => {
-        this.loading = true;
+        runInAction(() => {
+            this.loading = true;
+        });
+
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/listInstallers/create?fullName=${data.fullName}&phone=${data.phone}`, {
                 credentials: "include",
@@ -175,7 +199,10 @@ class InstallerStore {
 
                 return;
             }
-            this.success = 'Установщик успешно создан';
+
+            runInAction(() => {
+                this.success = 'Установщик успешно создан';
+            });
 
             console.log("Создание установщика успешно:", text);
 
@@ -185,12 +212,17 @@ class InstallerStore {
                 this.error = "Не удалось создать установщика (сетевая ошибка)";
             });
         } finally {
-            runInAction(() => { this.loading = false; });
+            runInAction(() => {
+                this.loading = false;
+            });
         }
     }
 
     editInstaller = async (id: number, data: { fullName: string; phone: string }) => {
-        this.loading = true;
+        runInAction(() => {
+            this.loading = true;
+        });
+
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/installer/${id}?fullName=${data.fullName}&phone=${data.phone}`, {
                 credentials: "include",
@@ -207,7 +239,10 @@ class InstallerStore {
 
                 return;
             }
-            this.success = 'Установщик успешно обновлен';
+
+            runInAction(() => {
+                this.success = 'Установщик успешно обновлен';
+            });
 
             console.log("Обновление установщика успешно:", text);
         } catch (error) {
@@ -216,7 +251,9 @@ class InstallerStore {
                 this.error = "Не удалось обновить установщика";
             });
         } finally {
-            this.loading = false;
+            runInAction(() => {
+                this.loading = false;
+            });
         }
     }
 

@@ -132,8 +132,11 @@ export class OrderStore {
             },
         }
 
-        this.error = null;
-        this.loading = true;
+        runInAction(() => {
+            this.error = null;
+            this.loading = true;
+        });
+
         const url = `${process.env.NEXT_PUBLIC_API_URL}/orders/create`
         try {
             const response = await fetch(url, {
@@ -154,18 +157,24 @@ export class OrderStore {
 
                 return;
             }
-            this.success = 'Заказ успешно создан';
 
+            runInAction(() => {
+                this.success = 'Заказ успешно создан';
+            });
 
             return data;
 
         } catch (error: any) {
-            console.error(error);
-            this.error = error.message || "Неизвестная ошибка при отправке заказа";
+            runInAction(() => {
+                console.error(error);
+                this.error = error.message || "Неизвестная ошибка при отправке заказа";
+            });
             return null;
         }
         finally {
-            this.loading = false;
+            runInAction(() => {
+                this.loading = false;
+            });
         }
     }
 
@@ -180,8 +189,10 @@ export class OrderStore {
         }
 
         try {
-            this.error = null;
-            this.loading = true;
+            runInAction(() => {
+                this.error = null;
+                this.loading = true;
+            });
 
             const response = await fetch(url, options)
             const data = await response.json();
@@ -198,11 +209,15 @@ export class OrderStore {
             return data;
         }
         catch (err: any) {
-            console.error(err);
-            this.error = err.message;
+            runInAction(() => {
+                console.error(err);
+                this.error = err.message;
+            });
 
         } finally {
-            this.loading = false;
+            runInAction(() => {
+                this.loading = false;
+            });
         }
 
     }
@@ -217,6 +232,12 @@ export class OrderStore {
         };
 
         try {
+            runInAction(() => {
+                this.loading = true;
+                this.error = null;
+                this.success = null;
+            });
+
             const response = await fetch(url, options);
             const text = await response.text();
 
@@ -229,7 +250,9 @@ export class OrderStore {
                 return;
             }
 
-            this.success = 'Заказ успешно обновлен';
+            runInAction(() => {
+                this.success = 'Заказ успешно обновлен';
+            });
 
             if (!text.trim() || text === "{}") {
                 console.log("Заказ успешно обновлён (пустой ответ)");

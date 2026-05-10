@@ -1,0 +1,65 @@
+@use '@/globals.scss' as *;
+
+
+
+.success-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+    .success-page-block {
+        display: flex;
+        flex-direction: column;
+        row-gap: 20px;
+        align-items: center;
+
+        &-img {
+            width: 120px;
+            height: 120px;
+        }
+
+        &-subtitle {
+            display: flex;
+            flex-direction: column;
+            row-gap: 10px;
+            font-size: 16px;
+            text-align: center;
+
+            a {
+                color: blue;
+                font-size: 16px;
+                &:hover {
+                    text-decoration: underline;
+                }
+        }
+    }}
+
+// Медиа-запросы для мобильных устройств
+@media (max-width: 768px) {
+    .success-page-block {
+        row-gap: 15px;
+        padding: 20px;
+
+        &-img {
+            width: 80px;
+            height: 80px;
+        }
+
+        &-title {
+            text-align: center;
+            font-size: 18px;
+        }
+
+        &-subtitle {
+            font-size: 14px;
+            row-gap: 8px;
+
+            a {
+                font-size: 14px;
+            }
+        }
+    }
+}

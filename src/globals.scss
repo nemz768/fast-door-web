@@ -20,7 +20,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Montserrat", sans-serif;
-  font-style: Medium;
+  font-weight: 500;
 }
 // Color Variables
 $background_color: #E9E9E9;
@@ -50,7 +50,7 @@ button {
   background-color: $background_color;
   width: 100%;
   max-width: 250px;
-  transition: .8s;
+  transition: all .8s;
   color: $alternative_text-color;
   height: 70px;
   border: 1px solid $border_color;
@@ -62,7 +62,7 @@ button {
 button:hover {
  background-color: #b7b8b9; 
   border: 1px solid $border_color;
-  transition: .8s;
+  transition: all .8s;
 }
 
 a {

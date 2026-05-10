@@ -8,18 +8,19 @@ import DoorsTable from "./doorsTable";
 import { formatDate } from "../formatDate/formatDate";
 import { useRouter } from 'next/navigation'
 import { observer } from "mobx-react-lite";
+import { runInAction } from "mobx";
 import removeW from '@/assets/images/removeW.png'
 import confirmW from '@/assets/images/confirmW.png'
 import editW from '@/assets/images/editW.png'
+import inviteW from '@/assets/images/send-invite.png'
 import TableButton from "../tableButton/tableButton";
 import InstallerChoiceSelect from '../installerChoice/installerChoice';
 import { installerStore } from "@/stores/installerStore";
 import CommentInput from "../installerCommentInput/installerCommentInput";
 import Loader from "../loader/loader";
-import telegramIcon from '@/assets/images/tgW.png';
 import "./installerTable.scss";
 import { formatPhone } from "../formatPhone/formatPhone";
-import { warning } from "../RequestStatus/requestStatus";
+import { success, warning } from "../RequestStatus/requestStatus";
 
 interface CustomTableProps {
     role: string;
@@ -89,9 +90,11 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
             await installerStore.getInstallersWorkloadByDate(item.dateOrder);
 
 
-            tableStore.data = tableStore.data.filter(
-                (order: any) => order.id !== item.id
-            );
+            runInAction(() => {
+                tableStore.data = tableStore.data.filter(
+                    (order: any) => order.id !== item.id
+                );
+            });
 
         } catch (err) {
             console.error("Ошибка при выборе установщика:", err);
@@ -107,19 +110,30 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                         <tr className="custom-table-header-box">
                             <th className="table-fullName">ФИО</th>
                             <th>Номер телефона</th>
-                            <th>Получение <br /> заказа</th>
+                            <th>Статус установщика</th>
                             <th>Действие</th>
                         </tr>
                     </thead>
                     <tbody className="custom-table-tbody">
                         {users.map((item: any) => (
                             <tr key={item.id}>
-                                <td>{item.fullName}</td>
+                                <td>{item.full_name}</td>
                                 <td>{formatPhone(item.phone)}</td>
-                                <td><img src={telegramIcon.src} alt="Telegram" className="social-img" style={!item.tgId ? { opacity: 0.5 } : { opacity: 1 }} /></td>
+                                <td className="custom-table-tbody-centered">{!item.invite_code ? <p>Установщик есть в системе</p> : <TableButton
+                                    src={inviteW.src}
+                                    alt="invite"
+                                    title="Пригласить установщика"
+                                    className="invite-btn"
+                                    onClick={() => {
+                                        installerStore.getInstallerById(item.id).then(async () => {
+                                            await navigator.clipboard.writeText(item.invite_code);
+                                            success("Приглашение скопировано в буфер обмена");
+                                        })
+                                    }}
+                                />}</td>
                                 <td className="custom-table-tbody-centered">
-                                    <TableButton onClick={() => router.push(`./edit/${item.id}`)} src={editW.src} alt="edit" />
-                                    <TableButton src={removeW.src} alt="remove" onClick={async () => {
+                                    <TableButton title="Редактировать установщика" onClick={() => router.push(`./edit/${item.id}`)} src={editW.src} alt="edit" />
+                                    <TableButton title="Удалить установщика" src={removeW.src} alt="remove" onClick={async () => {
                                         await installerStore.deleteInstaller(item.id);
                                         getUsersData(role, page, size, selectedTable);
                                     }} />
@@ -209,11 +223,13 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                                 setEditingRowId(null);
                                                 getUsersData(role, page, size, selectedTable);
                                             }}
+                                            title="Изменить заказ"
                                         />
                                     ) : (
                                         <TableButton
                                             src={editW.src}
                                             alt="edit"
+                                            title="Редактировать заказ"
                                             onClick={() => {
                                                 setEditingRowId(item.id);
                                                 if (item.installerName) {
@@ -236,6 +252,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                     <TableButton
                                         src={removeW.src}
                                         alt="remove"
+                                        title="Удалить заказ"
                                         onClick={() => {
                                             deleteOrder(item.id);
                                             getUsersData(role, page, size, selectedTable);
@@ -302,8 +319,8 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                     </td>
                                 )}
                                 {(role === 'salespeople') && <td className="table-btns custom-table-tbody-centered">
-                                    <TableButton src={editW.src} alt="edit" onClick={() => router.push(`./edit/${item.id}`)} />
-                                    <TableButton src={removeW.src} alt="remove" onClick={() => {
+                                    <TableButton title="Редактировать заказ" src={editW.src} alt="edit" onClick={() => router.push(`./edit/${item.id}`)} />
+                                    <TableButton title="Удалить заказ" src={removeW.src} alt="remove" onClick={() => {
                                         deleteOrder(item.id)
                                         getUsersData(role, page, size, selectedTable);
                                     }} /></td>}
@@ -313,6 +330,7 @@ export default observer(function CustomTable({ role, pagination, initialPage, in
                                         <TableButton
                                             src={confirmW.src}
                                             alt="confirm"
+                                            title="Подтвердить заказ"
                                             onClick={() => handleSubmitInstaller(item)}
                                         />
                                     </td>

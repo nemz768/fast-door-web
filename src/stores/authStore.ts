@@ -1,3 +1,4 @@
+import { ok } from 'assert';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 export class AuthStore {
@@ -146,6 +147,95 @@ export class AuthStore {
   isLoggedIn = () => {
     return this.user !== null;
   };
+
+  register = async (body: {
+    username: string;
+    password: string;
+    confirm: string;
+    inviteCode: string;
+  }) => {
+    runInAction(() => {
+      this.isLoading = true;
+      this.error = null;
+    });
+
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        runInAction(() => {
+          if (response.status === 409) {
+            this.error = 'Пользователь с таким логином уже существует';
+          } else if (response.status === 400) {
+            this.error = data?.message || 'Некорректные данные, проверьте введённые значения';
+          } else if (response.status === 404) {
+            this.error = data?.message || 'Пользователь в системе отсутствует или код приглашения неверный';
+          }
+          else {
+            this.error = data?.message || 'Ошибка при регистрации, попробуйте позже';
+          }
+        });
+        throw new Error(`http error! status: ${response.status}`);
+      }
+
+      runInAction(() => {
+        this.success = 'Регистрация успешна';
+      });
+
+      return data;
+    } catch (err: any) {
+      runInAction(() => {
+        if (!this.error) this.error = 'Ошибка подключения, проверьте соединение и попробуйте снова';
+      });
+      throw err;
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
+    }
+  };
+
+  CheckInviteCode = async (invite_code: string) => {
+    runInAction(() => {
+      this.isLoading = true;
+      this.error = null;
+    });
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/register/user?inviteCode=${encodeURIComponent(invite_code)}`,
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        runInAction(() => {
+          this.error = data?.message || 'Неверный код приглашения';
+        });
+        throw new Error(`http error! status: ${response.status}`);
+      }
+      return data;
+    } catch (err: any) {
+      runInAction(() => {
+        if (!this.error) this.error = 'Ошибка подключения, проверьте соединение и попробуйте снова';
+      });
+      throw err;
+    } finally {
+      runInAction(() => {
+        this.isLoading = false;
+      });
+    }
+  };
+
 }
 
 export const authStore = new AuthStore();

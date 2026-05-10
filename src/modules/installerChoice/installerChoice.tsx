@@ -26,10 +26,10 @@ const InstallerChoiceSelect = observer(({ date, selectedInstaller, onChange }: I
     >
       <option value="">Выбрать</option>
       {installerStore.installers.map(installer => {
-        const w = workload[installer.fullName];
+        const w = workload[installer.full_name];
         return (
-          <option key={installer.id} value={installer.fullName}>
-            {installer.fullName} {w ? `M: ${w.front} Ж: ${w.in}` : ""}
+          <option key={installer.id} value={installer.full_name}>
+            {installer.full_name} {w ? `M: ${w.front} Ж: ${w.in}` : ""}
           </option>
         );
       })}

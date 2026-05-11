@@ -14,7 +14,7 @@ import UniversalCalendar from "../customCalendar/customCalendar";
 import { calendarStore } from "@/stores/calendarStore";
 
 interface SellerProps {
-    id?: number;
+    id?: string | undefined;
     type?: 'create' | 'edit';
 }
 

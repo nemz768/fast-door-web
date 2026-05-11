@@ -19,7 +19,7 @@ const InstallersCreate = observer(() => {
             <HeaderCreation />
             <main className="create-main">
                 <Title centered={true} pageTitle={"Изменить данные установщика"} />
-                <InstallerForm flag="edit" id={Number(params.id)} />
+               <InstallerForm id={Array.isArray(params.id) ? params.id[0] : params.id} flag="edit"/>
             </main>
         </ProtectedRoute>
     )

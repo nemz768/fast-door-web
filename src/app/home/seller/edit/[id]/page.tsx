@@ -20,7 +20,7 @@ const CreateOrderForm = observer(() => {
             <HeaderCreation />
             <div className="create-form-wrapper">
                 <Title centered={true} pageTitle={"Редактирование заказа"} />
-                <SellerForm id={Number(params.id)} type="edit"/>
+               <SellerForm id={Array.isArray(params.id) ? params.id[0] : params.id} type="edit"/>
             </div>
         </ProtectedRoute>
     )

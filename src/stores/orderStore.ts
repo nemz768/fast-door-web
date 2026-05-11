@@ -178,7 +178,7 @@ export class OrderStore {
         }
     }
 
-    getOrderSeller = async (id: number | undefined, role: string) => {
+    getOrderSeller = async (id: string | undefined, role: string) => {
         const url = `${process.env.NEXT_PUBLIC_API_URL}/edit/${id}`;
         const options: RequestInit = {
             method: "GET",
@@ -195,7 +195,9 @@ export class OrderStore {
             });
 
             const response = await fetch(url, options)
+            
             const data = await response.json();
+            console.log('status:', response.status, 'data:', data);
 
             if (!response.ok) {
                 runInAction(() => {
@@ -222,7 +224,7 @@ export class OrderStore {
 
     }
 
-    editOrderSeller = async (id: number, payload: object) => {
+    editOrderSeller = async (id: string, payload: object) => {
         const url = `${process.env.NEXT_PUBLIC_API_URL}/edit/${id}`;
         const options: RequestInit = {
             method: "PATCH",

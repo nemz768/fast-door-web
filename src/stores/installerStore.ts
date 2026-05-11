@@ -140,7 +140,7 @@ class InstallerStore {
         }
     }
 
-    getInstallerById = async (id: number) => {
+    getInstallerById = async (id: string) => {
         runInAction(() => {
             this.loading = true;
         });
@@ -218,7 +218,7 @@ class InstallerStore {
         }
     }
 
-    editInstaller = async (id: number, data: { fullName: string; phone: string }) => {
+    editInstaller = async (id: string, data: { fullName: string; phone: string }) => {
         runInAction(() => {
             this.loading = true;
         });

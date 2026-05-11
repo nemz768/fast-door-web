@@ -28,7 +28,7 @@ class CalendarStore {
     this.updateTrigger++;
   };
 
-  fetchPaged = async (page = 0, size = 10, sortBy = "id") => {
+  fetchPaged = async (page = 0, size = 10, sortBy = "limitDate") => {
     try {
       runInAction(() => {
         this.loading = true;

@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import { formatPhone } from '../formatPhone/formatPhone';
 
 interface InstallerFromProps {
-    id?: number;
+    id?: string;
     flag: 'create' | 'edit';
 }
 

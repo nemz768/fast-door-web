@@ -1,4 +1,3 @@
-import { ok } from 'assert';
 import { makeAutoObservable, runInAction } from 'mobx';
 
 export class AuthStore {

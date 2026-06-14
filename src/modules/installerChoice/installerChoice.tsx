@@ -29,7 +29,7 @@ const InstallerChoiceSelect = observer(({ date, selectedInstaller, onChange }: I
         const w = workload[installer.full_name];
         return (
           <option key={installer.id} value={installer.full_name}>
-            {installer.full_name} {w ? `M: ${w.front} Ж: ${w.in}` : ""}
+            {installer.full_name} {w ? `M: ${w.front} В: ${w.in}` : ""}
           </option>
         );
       })}
